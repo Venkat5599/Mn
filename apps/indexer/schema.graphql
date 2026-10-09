@@ -1,0 +1,69 @@
+type Room {
+  id: ID! # roomId
+  host: String!
+  mode: Int! # 0 POINTS, 1 STAKES
+  gamePk: Int!
+  playerCount: Int!
+  marketsSettled: Int!
+  handle: BigInt! # total chips ever bet
+  players: [Player!]! @derivedFrom(field: "room")
+  feed: [FeedItem!]! @derivedFrom(field: "room")
+}
+
+type Player {
+  id: ID! # roomId-address
+  room: Room!
+  address: String!
+  deposited: BigInt!
+  wagered: BigInt!
+  won: BigInt! # payouts on winning bets
+  net: BigInt! # won - lost (season standing)
+  wins: Int!
+  losses: Int!
+  streak: Int! # current run of correct calls
+  bestStreak: Int!
+}
+
+type Market {
+  id: ID! # roomId-gamePk-seq
+  room: Room!
+  gamePk: Int!
+  seq: Int!
+  pot: BigInt!
+  potBall: BigInt!
+  potStrike: BigInt!
+  potFoul: BigInt!
+  potInPlay: BigInt!
+  bettors: Int!
+  outcome: Int! # 0 until settled
+  rake: BigInt!
+  settledAt: Int # block timestamp
+  settleLatencySec: Int # settledAt - pitch endTs
+}
+
+type Pitch {
+  id: ID! # gamePk-seq
+  gamePk: Int!
+  seq: Int!
+  fast: Int!
+  confirmed: Int! # 0 until CRE confirms
+  matched: Boolean
+  voided: Boolean!
+  startTs: Int!
+  endTs: Int!
+  reportedAt: Int!
+  reportLatencySec: Int! # reportedAt - endTs
+  confirmedAt: Int
+}
+
+type FeedItem {
+  id: ID! # txHash-logIndex
+  room: Room!
+  kind: String! # joined | won | streak | settled | cashout
+  player: String
+  gamePk: Int
+  seq: Int
+  amount: BigInt
+  streak: Int
+  at: Int!
+}

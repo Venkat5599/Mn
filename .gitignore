@@ -1,0 +1,38 @@
+# deps + builds
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# foundry
+contracts/out/
+contracts/cache/
+contracts/broadcast/*/31337/
+contracts/broadcast/**/dry-run/
+
+# secrets
+.env
+.env.*
+!.env.example
+
+# runtime state
+apps/relayer/.state/
+
+# private research, never public
+ideas/
+SESSION_SUMMARY.md
+yc_companies_*.csv
+
+# os / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# local-only deployment written by dev:local
+deployments/31337.json
+
+# foundry libraries are installed by `bun run setup`
+contracts/lib/

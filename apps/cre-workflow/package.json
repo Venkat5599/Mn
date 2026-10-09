@@ -1,0 +1,19 @@
+{
+  "name": "@pitchside/cre-workflow",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Chainlink CRE workflow: independently confirms every pitch on the DON and writes it to PitchOracle.",
+  "scripts": {
+    "compile": "cre-compile src/main.ts dist/workflow.wasm",
+    "simulate": "cre workflow simulate --target staging-settings --config config.staging.json src/main.ts",
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@chainlink/cre-sdk": "1.23.0",
+    "@pitchside/shared": "workspace:*",
+    "viem": "2.31.7",
+    "zod": "3.25.76"
+  }
+}

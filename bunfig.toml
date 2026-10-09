@@ -1,0 +1,3 @@
+[install]
+# Mera lists react-native-passkey as a peer for its React Native build; the web app never loads it.
+peer = false

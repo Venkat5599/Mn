@@ -1,0 +1,14 @@
+{
+  "name": "@pitchside/indexer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Envio HyperIndex: room standings, streaks, room feed and settlement latency.",
+  "scripts": {
+    "codegen": "envio codegen",
+    "dev": "envio dev",
+    "start": "envio start"
+  },
+  "devDependencies": {
+    "envio": "2.32.12"
+  }
+}

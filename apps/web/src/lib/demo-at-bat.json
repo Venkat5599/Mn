@@ -1,0 +1,107 @@
+{
+  "source": "MLB gamePk 849834, CWS @ CLE, 2026-10-05",
+  "batter": "Travis Bazzana",
+  "pitcher": "Sean Newcomb",
+  "inning": 1,
+  "half": "bottom",
+  "zoneTop": 3.179,
+  "zoneBottom": 1.604,
+  "pitches": [
+    {
+      "seq": 39,
+      "n": 1,
+      "outcome": 2,
+      "call": "Called Strike",
+      "pX": 0.293,
+      "pZ": 2.865,
+      "mph": 84.2,
+      "type": "Slurve",
+      "balls": 0,
+      "strikes": 1
+    },
+    {
+      "seq": 40,
+      "n": 2,
+      "outcome": 1,
+      "call": "Ball",
+      "pX": -0.663,
+      "pZ": 2.954,
+      "mph": 96.6,
+      "type": "Sinker",
+      "balls": 1,
+      "strikes": 1
+    },
+    {
+      "seq": 41,
+      "n": 3,
+      "outcome": 3,
+      "call": "Foul",
+      "pX": 0.396,
+      "pZ": 2.198,
+      "mph": 95.6,
+      "type": "Sinker",
+      "balls": 1,
+      "strikes": 2
+    },
+    {
+      "seq": 42,
+      "n": 4,
+      "outcome": 3,
+      "call": "Foul",
+      "pX": -0.465,
+      "pZ": 2.337,
+      "mph": 84,
+      "type": "Slurve",
+      "balls": 1,
+      "strikes": 2
+    },
+    {
+      "seq": 43,
+      "n": 5,
+      "outcome": 1,
+      "call": "Ball",
+      "pX": -1.365,
+      "pZ": 1.476,
+      "mph": 84.4,
+      "type": "Slurve",
+      "balls": 2,
+      "strikes": 2
+    },
+    {
+      "seq": 44,
+      "n": 6,
+      "outcome": 3,
+      "call": "Foul",
+      "pX": 0.052,
+      "pZ": 2.265,
+      "mph": 98.9,
+      "type": "Four-Seam Fastball",
+      "balls": 2,
+      "strikes": 2
+    },
+    {
+      "seq": 45,
+      "n": 7,
+      "outcome": 1,
+      "call": "Ball",
+      "pX": -1.182,
+      "pZ": 2.293,
+      "mph": 95.4,
+      "type": "Sinker",
+      "balls": 3,
+      "strikes": 2
+    },
+    {
+      "seq": 46,
+      "n": 8,
+      "outcome": 2,
+      "call": "Called Strike",
+      "pX": -0.355,
+      "pZ": 2.296,
+      "mph": 96.7,
+      "type": "Sinker",
+      "balls": 3,
+      "strikes": 3
+    }
+  ]
+}

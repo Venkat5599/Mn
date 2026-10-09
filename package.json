@@ -1,0 +1,23 @@
+{
+  "name": "pitchside",
+  "private": true,
+  "description": "Bet your friends on every pitch. Per-pitch parimutuel rooms on Monad.",
+  "type": "module",
+  "workspaces": ["packages/*", "apps/relayer", "apps/cre-workflow", "apps/web"],
+  "scripts": {
+    "setup": "cd contracts && forge install --no-git foundry-rs/forge-std@v1.17.0 OpenZeppelin/openzeppelin-contracts@v5.1.0",
+    "build:contracts": "cd contracts && forge build",
+    "test:contracts": "cd contracts && forge test",
+    "abi": "bun scripts/gen-abi.ts",
+    "test": "bun test packages apps/relayer && bun run test:contracts",
+    "typecheck": "bun run --filter '*' typecheck",
+    "replay": "bun --cwd apps/relayer run replay",
+    "dev:web": "bun --cwd apps/web run dev",
+    "dev:relayer": "bun --cwd apps/relayer run start",
+    "dev:local": "bun --cwd apps/relayer run dev:local"
+  },
+  "devDependencies": {
+    "@types/bun": "1.2.20",
+    "typescript": "5.8.3"
+  }
+}

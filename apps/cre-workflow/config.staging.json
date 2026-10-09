@@ -1,0 +1,10 @@
+{
+  "chainSelectorName": "monad-testnet",
+  "isTestnet": true,
+  "oracleAddress": "0x0000000000000000000000000000000000000000",
+  "gamePk": 849831,
+  "gasLimit": "120000",
+  "sweepSchedule": "*/30 * * * * *",
+  "sweepWindow": 12,
+  "authorizedKeys": []
+}

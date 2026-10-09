@@ -1,0 +1,131 @@
+/*
+ * Pitchside — a ballpark at night.
+ * Every colour is a material from the park: the field at night, chalk lines,
+ * sodium floodlights, infield clay, outfield grass. Accents are tonal, never neon.
+ */
+:root {
+  --field-0: #07100c;
+  --field-1: #0c1712;
+  --field-2: #122019;
+  --field-3: #1a2c22;
+  --chalk: #edeae1;
+  --chalk-2: #b9c0b4;
+  --chalk-3: #7d887f;
+  --chalk-4: #46534a;
+  /* floodlight: warm but held back, a light source rather than a highlighter */
+  --sodium: #dfb978;
+  --sodium-ink: #2a1d07;
+  --clay: #c47d61;
+  --grass: #86ab74;
+  --ball: #c9cfc4;
+  --danger: #d9826d;
+
+  /* outcome = material */
+  --o-ball: var(--ball);
+  --o-strike: var(--sodium);
+  --o-foul: var(--clay);
+  --o-inplay: var(--grass);
+
+  --font-display: var(--font-tanker), "Arial Narrow", sans-serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-data: ui-monospace, "SF Mono", "Cascadia Mono", monospace;
+
+  --gutter: clamp(16px, 4vw, 40px);
+  --radius: 14px;
+  --radius-lg: 22px;
+  --spring: cubic-bezier(0.22, 1.2, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* the canvas gets the plain field so the body art below spans the whole document, not one viewport */
+  background: var(--field-0);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  color: var(--chalk);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.45;
+  background-color: var(--field-0);
+  /* Floodlights rake down from the towers above; the grass is mown in stripes below. */
+  background-image:
+    linear-gradient(
+      180deg,
+      rgb(232 180 92 / 0.11) 0%,
+      rgb(232 180 92 / 0.05) 18%,
+      rgb(232 180 92 / 0.015) 38%,
+      transparent 55%
+    ),
+    linear-gradient(180deg, transparent 52%, rgb(7 16 12 / 0.92) 100%),
+    repeating-linear-gradient(
+      90deg,
+      rgb(134 171 116 / 0.026) 0 64px,
+      transparent 64px 128px
+    );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Film grain on the substrate only: it sits behind every piece of content. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--sodium);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
