@@ -64,7 +64,7 @@ export default function Portfolio() {
                 {d.positions.map(({ r, units }) => (
                   <tr key={r.id.toString()}>
                     <td className="num">
-                      <Link href={`/c/${r.id}`}>{r.id.toString()}</Link>
+                      <Link href={`/app/c/${r.id}`}>{r.id.toString()}</Link>
                     </td>
                     <td>{bytes32Label(r.terms.underlying)}</td>
                     <td className={`st st-${STATE_LABEL[r.status.state as State].toLowerCase().replace(" ", "")}`}>{STATE_LABEL[r.status.state as State]}</td>
@@ -98,7 +98,7 @@ export default function Portfolio() {
                 {d.selling.map((r) => (
                   <tr key={r.id.toString()}>
                     <td className="num">
-                      <Link href={`/c/${r.id}`}>{r.id.toString()}</Link>
+                      <Link href={`/app/c/${r.id}`}>{r.id.toString()}</Link>
                     </td>
                     <td className={`st st-${STATE_LABEL[r.status.state as State].toLowerCase().replace(" ", "")}`}>{STATE_LABEL[r.status.state as State]}</td>
                     <td className="num">
@@ -115,7 +115,7 @@ export default function Portfolio() {
           <p className="muted">
             {d ? (
               <>
-                You have not issued protection. <Link href="/issue">Issue a contract</Link>.
+                You have not issued protection. <Link href="/app/issue">Issue a contract</Link>.
               </>
             ) : (
               "Loading…"

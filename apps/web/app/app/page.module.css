@@ -140,3 +140,7 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.pageTitle {
+  font-size: 30px;
+}

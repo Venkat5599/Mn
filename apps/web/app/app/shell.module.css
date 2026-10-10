@@ -1,0 +1,21 @@
+.shell {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: 100dvh;
+}
+
+.content {
+  min-width: 0;
+}
+
+/* pages inside the dashboard use the full content column */
+.content :global(.wrap) {
+  width: min(1180px, 100%);
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

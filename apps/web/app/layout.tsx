@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { Nav } from "@/components/Nav";
 import { WalletProvider } from "@/components/Wallet";
 import "./globals.css";
 
@@ -29,7 +28,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={sentient.variable}>
       <body>
         <WalletProvider>
-          <Nav />
           {children}
         </WalletProvider>
       </body>
