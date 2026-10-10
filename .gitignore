@@ -6,10 +6,10 @@ dist/
 *.tsbuildinfo
 
 # foundry
-contracts/out/
-contracts/cache/
-contracts/broadcast/*/31337/
-contracts/broadcast/**/dry-run/
+packages/contracts/out/
+packages/contracts/cache/
+packages/contracts/broadcast/*/31337/
+packages/contracts/broadcast/**/dry-run/
 
 # secrets
 .env
@@ -17,7 +17,7 @@ contracts/broadcast/**/dry-run/
 !.env.example
 
 # runtime state
-backend/relayer/.state/
+apps/oracle/.state/
 
 # private research, never public
 ideas/
@@ -35,4 +35,7 @@ Thumbs.db
 deployments/31337.json
 
 # foundry libraries are installed by `bun run setup`
-contracts/lib/
+packages/contracts/lib/
+
+# design reference export (not shipped)
+stitch_*/
