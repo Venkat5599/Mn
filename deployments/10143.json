@@ -1,0 +1,10 @@
+{
+  "chainId": 10143,
+  "market": "0x9dc5f35B0866bB0a1F046712B38f11E2544D701E",
+  "oracle": "0xE65E13b3c69c1057FDDdA52CA96B0cB6721eb8D4",
+  "policyId": 1,
+  "startBlock": 69898677,
+  "token": "0xeeBDcA711Cb71A85b791141180a9548206C94063",
+  "tokenIsTestOnly": true,
+  "vault": "0xf2aF6d0D92ED7106e064F02087586E4464E029D3"
+}

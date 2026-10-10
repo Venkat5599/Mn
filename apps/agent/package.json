@@ -1,0 +1,10 @@
+{
+  "name": "@hyperhedge/agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Delivery agent: answers proof-of-work challenges with this host's real compute.",
+  "scripts": {
+    "start": "bun src/index.ts"
+  }
+}
