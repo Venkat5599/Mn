@@ -11,6 +11,7 @@
  */
 import { loadEnv, log } from "./env";
 import { Oracle } from "./oracle";
+import { EventIndex } from "./events";
 import { PriceOracle } from "./price";
 import { Store } from "./store";
 
@@ -19,6 +20,8 @@ const store = await Store.open(env.stateDir, env.deployment.startBlock);
 const oracle = new Oracle(env, store);
 const prices = new PriceOracle(env, env.deployment.pricePool);
 await prices.load();
+const events = new EventIndex(env);
+await events.load();
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -50,6 +53,13 @@ const server = Bun.serve({
     if (contract) {
       const c = store.contracts.get(contract[1]!);
       return c ? json({ ...summary(c), challenges: c.challenges }) : json({ error: "unknown contract" }, 404);
+    }
+    if (pathname === "/events") {
+      const params = new URL(req.url).searchParams;
+      const limit = Math.min(500, Number(params.get("limit") ?? 200));
+      const source = params.get("source");
+      const list = events.events.filter((e) => !source || e.source === source);
+      return json({ total: list.length, events: list.slice(-limit).reverse() });
     }
     if (pathname === "/price/latest") {
       const s = prices.latest();
@@ -84,6 +94,18 @@ const server = Bun.serve({
 log("oracle up", { port: env.port, market: env.deployment.market, submitter: env.submitter.address });
 
 // price sampling every 5 s and pool settlement every 30 s, independent of the delivery loop
+let indexing = false;
+const eventTimer = setInterval(async () => {
+  if (indexing) return;
+  indexing = true;
+  try {
+    await events.tick();
+  } catch (err) {
+    log("event index failed", { err: String(err) });
+  } finally {
+    indexing = false;
+  }
+}, 4_000);
 let lastKeep = 0;
 const priceTimer = setInterval(async () => {
   try {
@@ -110,6 +132,7 @@ while (running) {
   await Bun.sleep(Math.max(0, env.tickMs - (Date.now() - started)));
 }
 clearInterval(priceTimer);
+clearInterval(eventTimer);
 server.stop();
 await store.save();
 process.exit(0);

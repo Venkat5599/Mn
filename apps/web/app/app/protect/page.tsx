@@ -104,7 +104,12 @@ export default function Protect() {
   const buy = async () => {
     const signed = await loadSigned();
     const [prem] = await pub.readContract({ ...pool, functionName: "quote", args: [notional6, strikeBps, dur] });
-    const maxPremium = (prem * 102n) / 100n; // 2% slippage for the utilization moving under you
+    // slippage allowance from Settings (default 2%) for the utilization moving under you
+    let slip = 2;
+    try {
+      slip = JSON.parse(localStorage.getItem("hyperhedge.settings") ?? "{}").slippagePct ?? 2;
+    } catch {}
+    const maxPremium = (prem * BigInt(Math.round(1000 + slip * 10))) / 1000n;
     const r = { feedId: signed.report.feedId, price: BigInt(signed.report.price), publishTime: BigInt(signed.report.publishTime) };
     await tx.run([
       { label: "Approve hhUSD for the pool", request: { address: deployment.token, abi: tokenAbi, functionName: "approve", args: [POOL, maxPremium] } },

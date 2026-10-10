@@ -24,6 +24,11 @@ export async function loadEnv() {
     deployment,
     chain,
     pub: createPublicClient({ chain, transport: http(rpc, { retryCount: 3, timeout: 15_000 }) }),
+    // eth_getLogs needs ranges a free dedicated RPC may refuse (Alchemy free: 10 blocks); the public RPC allows 100
+    logsPub: createPublicClient({
+      chain,
+      transport: http(process.env.LOGS_RPC_URL ?? chain.rpcUrls.default.http[0], { retryCount: 3, timeout: 15_000 }),
+    }),
     wallet: createWalletClient({ chain, account: submitter, transport: http(rpc, { retryCount: 2, timeout: 20_000 }) }),
     submitter,
     signers,

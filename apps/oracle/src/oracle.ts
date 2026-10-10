@@ -63,11 +63,11 @@ export class Oracle {
   // ───────────── discovery: every Created event, with its committed SLA ─────────────
 
   private async discover() {
-    const latest = await this.env.pub.getBlockNumber();
+    const latest = await this.env.logsPub.getBlockNumber();
     let from = BigInt(this.store.scannedTo + 1);
     while (from <= latest) {
       const to = from + LOG_CHUNK - 1n < latest ? from + LOG_CHUNK - 1n : latest;
-      const logs = await this.env.pub.getLogs({ address: this.env.deployment.market, event: CREATED, fromBlock: from, toBlock: to });
+      const logs = await this.env.logsPub.getLogs({ address: this.env.deployment.market, event: CREATED, fromBlock: from, toBlock: to });
       for (const l of logs) {
         const { id, terms, slaURI } = l.args;
         if (id === undefined || !terms || slaURI === undefined) continue;
