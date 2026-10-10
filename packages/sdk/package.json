@@ -1,0 +1,19 @@
+{
+  "name": "@hyperhedge/sdk",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "ABIs, EIP-712 report types, SLA and proof-of-work evidence formats shared by the oracle, agent and web app.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./abi": "./src/abi/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "viem": "2.31.7"
+  }
+}

@@ -1,25 +1,17 @@
 {
-  "name": "pitchside",
+  "name": "hyperhedge",
   "private": true,
-  "description": "Bet your friends on every pitch. Per-pitch parimutuel rooms on Monad.",
+  "description": "A collateralized market for GPU compute delivery risk, settled on Monad.",
   "type": "module",
   "workspaces": [
-    "sdk",
-    "backend/relayer",
-    "backend/cre",
-    "frontend"
+    "packages/sdk"
   ],
   "scripts": {
-    "setup": "cd contracts && forge install --no-git foundry-rs/forge-std@v1.17.0 OpenZeppelin/openzeppelin-contracts@v5.1.0",
-    "build:contracts": "cd contracts && forge build",
-    "test:contracts": "cd contracts && forge test",
+    "setup": "cd packages/contracts && forge install --no-git foundry-rs/forge-std@v1.17.0 OpenZeppelin/openzeppelin-contracts@v5.1.0",
+    "build:contracts": "cd packages/contracts && forge build",
+    "test:contracts": "cd packages/contracts && forge test",
     "abi": "bun scripts/gen-abi.ts",
-    "test": "bun test sdk && bun run test:contracts",
-    "replay": "bun --cwd backend/relayer run replay",
-    "dev:local": "bun --cwd backend/relayer run dev:local",
-    "dev:relayer": "bun --cwd backend/relayer run start",
-    "dev:web": "bun --cwd frontend run dev",
-    "build:web": "bun --cwd frontend run build"
+    "test": "bun test packages/sdk && bun run test:contracts"
   },
   "devDependencies": {
     "@types/bun": "1.2.20",
