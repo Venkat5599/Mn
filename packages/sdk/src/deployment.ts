@@ -12,4 +12,6 @@ export interface Deployment {
   policyId: number;
   /** MON/USD price-protection AMM */
   pricePool?: Address;
+  /** onchain order book for protection positions */
+  listings?: Address;
 }

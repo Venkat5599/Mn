@@ -3,10 +3,11 @@
 import { STATE_LABEL, State, challengeValid, type ChallengeRecord } from "@hyperhedge/sdk";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Calculator, CoverageBars, Payoff } from "@/components/Math";
 import { loadContracts, loadOracle, loadOracleContract, loadVault, usePoll, type ContractRow } from "@/lib/data";
 import { bytes32Label, relative, usd } from "@/lib/format";
+import { getPrefs } from "@/lib/settings";
 import s from "./markets.module.css";
 
 const TABS = ["Proofs", "Collateral", "Payoff", "Expected value"] as const;
@@ -28,6 +29,7 @@ function Markets() {
   const [picked, setPicked] = useState<string>();
   const [tab, setTab] = useState<(typeof TABS)[number]>("Proofs");
   const [filter, setFilter] = useState<keyof typeof FILTERS>("all");
+  useEffect(() => setFilter(getPrefs().marketsFilter), []); // Settings: markets default filter
   const all = rows.data ?? [];
   const sel = all.find((r) => r.id.toString() === picked) ?? all.find((r) => r.status.state === State.ACTIVE) ?? all[0];
   const live = usePoll(async () => (sel ? loadOracleContract(sel.id) : undefined), 5_000, [sel?.id.toString()]);

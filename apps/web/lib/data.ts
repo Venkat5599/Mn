@@ -4,6 +4,7 @@ import { collateralVaultAbi, computeMarketAbi, type ChallengeRecord, type Sla } 
 import { useEffect, useRef, useState } from "react";
 import type { Address, Hex } from "viem";
 import { ORACLE_API, deployment, pub } from "./chain";
+import { getPrefs } from "./settings";
 
 const market = { address: deployment.market, abi: computeMarketAbi } as const;
 const vault = { address: deployment.vault, abi: collateralVaultAbi } as const;
@@ -67,6 +68,7 @@ export function usePoll<T>(load: () => Promise<T>, ms: number, deps: unknown[]) 
   useEffect(() => {
     let alive = true;
     let timer: ReturnType<typeof setTimeout>;
+    ms = Math.round(ms * getPrefs().refreshFactor); // Settings: live data refresh
     const run = async () => {
       if (document.hidden) {
         timer = setTimeout(run, ms);

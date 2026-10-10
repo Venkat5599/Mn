@@ -15,6 +15,7 @@ const CONTRACTS = [
   { file: "CollateralVault.sol", name: "CollateralVault", exportName: "collateralVaultAbi" },
   { file: "OracleVerifier.sol", name: "OracleVerifier", exportName: "oracleVerifierAbi" },
   { file: "PriceProtectionPool.sol", name: "PriceProtectionPool", exportName: "priceProtectionPoolAbi" },
+  { file: "PositionListings.sol", name: "PositionListings", exportName: "positionListingsAbi" },
 ] as const;
 
 await $`forge build --silent`.cwd(contracts);

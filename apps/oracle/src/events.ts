@@ -1,10 +1,10 @@
-import { collateralVaultAbi, computeMarketAbi, priceProtectionPoolAbi } from "@hyperhedge/sdk";
+import { collateralVaultAbi, computeMarketAbi, positionListingsAbi, priceProtectionPoolAbi } from "@hyperhedge/sdk";
 import { join } from "node:path";
 import { decodeEventLog, type Abi, type Address, type Hex } from "viem";
 import { log, type Env } from "./env";
 
 export interface IndexedEvent {
-  source: "market" | "vault" | "pool";
+  source: "market" | "vault" | "pool" | "listings";
   name: string;
   tx: Hex;
   block: number;
@@ -31,6 +31,7 @@ export class EventIndex {
       { address: d.market, abi: computeMarketAbi as Abi, source: "market" },
       { address: d.vault, abi: collateralVaultAbi as Abi, source: "vault" },
       ...(d.pricePool ? [{ address: d.pricePool, abi: priceProtectionPoolAbi as Abi, source: "pool" as const }] : []),
+      ...(d.listings ? [{ address: d.listings, abi: positionListingsAbi as Abi, source: "listings" as const }] : []),
     ];
   }
 

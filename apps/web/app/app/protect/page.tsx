@@ -1,7 +1,7 @@
 "use client";
 
 import { priceProtectionPoolAbi } from "@hyperhedge/sdk";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Address, Hex } from "viem";
 import { CandleChart, PremiumCurve, StrikeHistogram, type Candle } from "@/components/PriceCharts";
 import { TxStatus } from "@/components/TxStatus";
@@ -9,6 +9,7 @@ import { useTx, useWallet } from "@/components/Wallet";
 import { ORACLE_API, addrLink, deployment, pub, tokenAbi } from "@/lib/chain";
 import { usePoll } from "@/lib/data";
 import { relative, short, usd } from "@/lib/format";
+import { getPrefs } from "@/lib/settings";
 import s from "./protect.module.css";
 
 const POOL = (process.env.NEXT_PUBLIC_PRICE_POOL ?? "0x4dC4E80DaE43f2149B5E104194522550921A71d9") as Address;
@@ -56,6 +57,11 @@ export default function Protect() {
   const [notional, setNotional] = useState(100);
   const [dropPct, setDropPct] = useState(5);
   const [dur, setDur] = useState(0);
+  useEffect(() => {
+    const p = getPrefs(); // Settings: default drop and length
+    setDropPct(p.dropPct);
+    setDur(p.durationIdx);
+  }, []);
   const [lpAmount, setLpAmount] = useState("");
   const [view, setView] = useState<bigint>();
 
@@ -105,10 +111,7 @@ export default function Protect() {
     const signed = await loadSigned();
     const [prem] = await pub.readContract({ ...pool, functionName: "quote", args: [notional6, strikeBps, dur] });
     // slippage allowance from Settings (default 2%) for the utilization moving under you
-    let slip = 2;
-    try {
-      slip = JSON.parse(localStorage.getItem("hyperhedge.settings") ?? "{}").slippagePct ?? 2;
-    } catch {}
+    const slip = getPrefs().slippagePct;
     const maxPremium = (prem * BigInt(Math.round(1000 + slip * 10))) / 1000n;
     const r = { feedId: signed.report.feedId, price: BigInt(signed.report.price), publishTime: BigInt(signed.report.publishTime) };
     await tx.run([

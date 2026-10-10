@@ -4,6 +4,7 @@
   "oracle": "0xE65E13b3c69c1057FDDdA52CA96B0cB6721eb8D4",
   "policyId": 1,
   "pricePool": "0x4dC4E80DaE43f2149B5E104194522550921A71d9",
+  "listings": "0x3203EEEB9F675cF818856727172120c33147a68E",
   "startBlock": 69898677,
   "token": "0xeeBDcA711Cb71A85b791141180a9548206C94063",
   "tokenIsTestOnly": true,
