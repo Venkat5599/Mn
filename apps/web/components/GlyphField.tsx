@@ -14,7 +14,7 @@ export function GlyphField({ className, peaks = [[0.5, 0.95, 0.22], [0.22, 0.55,
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = true; // static texture: no flicker
     const GLYPHS = ["|", "ı", ":", "!", "·", "|", "ǀ"];
     let cells: { x: number; y: number; g: string; a: number }[] = [];
     let raf = 0;

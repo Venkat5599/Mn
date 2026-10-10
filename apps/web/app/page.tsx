@@ -94,7 +94,6 @@ export default function Landing() {
         {[12, 23, 41, 63, 77, 88].map((l, i) => (
           <span key={l} className={s.streak} style={{ left: `${l}%`, top: `${14 + ((i * 17) % 40)}%`, animationDelay: `${i * 0.7}s` }} />
         ))}
-        <GlyphField className={s.glyphs} peaks={[[0.5, 0.82, 0.2], [0.18, 0.5, 0.13], [0.82, 0.55, 0.15]]} />
       </section>
 
       {/* ── about (light) ──────────────────────────────────── */}
