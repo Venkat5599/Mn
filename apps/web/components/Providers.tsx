@@ -24,7 +24,7 @@ const connectors = connectorsForWallets(
 export const wagmiConfig = createConfig({
   chains: [chain],
   connectors,
-  transports: { [chain.id]: http(chain.rpcUrls.default.http[0]) },
+  transports: { [chain.id]: http(process.env.NEXT_PUBLIC_RPC_URL ?? chain.rpcUrls.default.http[0]) },
   ssr: true,
 });
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { monadTestnet, type Deployment } from "@hyperhedge/sdk";
-import { createPublicClient, createWalletClient, custom, http, type Address, type EIP1193Provider } from "viem";
+import { createPublicClient, createWalletClient, custom, fallback, http, type Address, type EIP1193Provider } from "viem";
 
 /** Public addresses of the live Monad testnet deployment (deployments/10143.json). */
 export const deployment: Deployment = {
@@ -19,9 +19,18 @@ export const chain = monadTestnet;
 export const explorer = monadTestnet.blockExplorers.default.url;
 export const ORACLE_API = "/api/oracle";
 
+// Reads made in the same tick go out as one Multicall3 call, and a throttled RPC falls through to the next.
 export const pub = createPublicClient({
   chain,
-  transport: http(process.env.NEXT_PUBLIC_RPC_URL ?? chain.rpcUrls.default.http[0], { batch: true, retryCount: 2 }),
+  batch: { multicall: { wait: 16 } },
+  transport: fallback(
+    [
+      http(process.env.NEXT_PUBLIC_RPC_URL ?? chain.rpcUrls.default.http[0], { timeout: 8_000, retryCount: 1 }),
+      http("https://monad-testnet.drpc.org", { timeout: 8_000, retryCount: 1 }),
+      http("https://10143.rpc.thirdweb.com", { timeout: 8_000, retryCount: 1 }),
+    ],
+    { retryCount: 1 },
+  ),
 });
 
 declare global {

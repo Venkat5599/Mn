@@ -59,7 +59,7 @@ export default function Protect() {
   const [lpAmount, setLpAmount] = useState("");
   const [view, setView] = useState<bigint>();
 
-  const p = usePoll(() => loadPool(account), 5_000, [account]);
+  const p = usePoll(() => loadPool(account), 10_000, [account]);
   const price = usePoll(loadSigned, 5_000, []);
   const candles = usePoll(() => loadCandles(GRANS[gran]), 30_000, [gran]);
   const live = price.data ? price.data.report.price / P8 : undefined;

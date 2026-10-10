@@ -44,7 +44,21 @@ export interface ContractRow {
   bond: bigint;
 }
 
-/** Polls `load` on an interval; keeps the last good value on transient RPC errors. */
+// The same loader called from several components (sidebar + page) shares one request and a short cache.
+const shared = new Map<unknown, { at: number; p: Promise<unknown> }>();
+function dedupe<T>(load: () => Promise<T>, ttl: number): Promise<T> {
+  const hit = shared.get(load);
+  if (hit && Date.now() - hit.at < ttl) return hit.p as Promise<T>;
+  const p = load();
+  shared.set(load, { at: Date.now(), p });
+  p.catch(() => shared.delete(load));
+  return p;
+}
+
+/**
+ * Polls `load` on an interval; keeps the last good value on transient RPC errors, pauses while the tab is
+ * hidden, and dedupes module-level loaders shared across components.
+ */
 export function usePoll<T>(load: () => Promise<T>, ms: number, deps: unknown[]) {
   const [data, setData] = useState<T>();
   const [error, setError] = useState<string>();
@@ -54,8 +68,12 @@ export function usePoll<T>(load: () => Promise<T>, ms: number, deps: unknown[]) 
     let alive = true;
     let timer: ReturnType<typeof setTimeout>;
     const run = async () => {
+      if (document.hidden) {
+        timer = setTimeout(run, ms);
+        return;
+      }
       try {
-        const v = await loadRef.current();
+        const v = await dedupe(loadRef.current, Math.min(ms, 3_000));
         if (alive) {
           setData(v);
           setError(undefined);

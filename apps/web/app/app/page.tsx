@@ -22,15 +22,15 @@ export default function MarketsPage() {
 
 function Markets() {
   const q = (useSearchParams().get("q") ?? "").trim().toLowerCase();
-  const rows = usePoll(loadContracts, 4_000, []);
-  const oracle = usePoll(loadOracle, 5_000, []);
+  const rows = usePoll(loadContracts, 8_000, []);
+  const oracle = usePoll(loadOracle, 8_000, []);
   const vault = usePoll(loadVault, 8_000, []);
   const [picked, setPicked] = useState<string>();
   const [tab, setTab] = useState<(typeof TABS)[number]>("Proofs");
   const [filter, setFilter] = useState<keyof typeof FILTERS>("all");
   const all = rows.data ?? [];
   const sel = all.find((r) => r.id.toString() === picked) ?? all.find((r) => r.status.state === State.ACTIVE) ?? all[0];
-  const live = usePoll(async () => (sel ? loadOracleContract(sel.id) : undefined), 3_000, [sel?.id.toString()]);
+  const live = usePoll(async () => (sel ? loadOracleContract(sel.id) : undefined), 5_000, [sel?.id.toString()]);
   const now = Date.now() / 1000;
 
   const shown = all.filter((r) => {
