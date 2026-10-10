@@ -147,7 +147,7 @@ export default function Markets() {
         </div>
         <div className="panel">
           <h3>Is the premium worth it?</h3>
-          <Calculator premium={featured?.terms.premiumPerUnit} payout={featured?.terms.payoutPerUnit} />
+          <Calculator key={featured?.id.toString() ?? "none"} premium={featured?.terms.premiumPerUnit} payout={featured?.terms.payoutPerUnit} />
         </div>
         <div className={`panel ${s.wide}`}>
           <h3>Collateral against what could be owed</h3>

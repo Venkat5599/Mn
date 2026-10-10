@@ -10,9 +10,9 @@
 }
 
 .title {
-  font-size: clamp(30px, 4.4vw, 54px);
+  font-size: clamp(28px, 3.8vw, 50px);
   line-height: 1.08;
-  max-width: 22ch;
+  max-width: 32ch;
 }
 
 .title em {
@@ -31,7 +31,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;
   gap: 20px;
-  align-items: stretch;
+  align-items: start;
 }
 
 .tapePanel {
@@ -134,7 +134,7 @@
 @media (max-width: 900px) {
   .stage,
   .math {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .vault {
     grid-template-columns: 1fr 1fr;

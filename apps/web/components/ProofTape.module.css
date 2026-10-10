@@ -77,3 +77,12 @@
     background: rgba(214, 178, 110, 0.24);
   }
 }
+
+@media (max-width: 600px) {
+  .cell span {
+    display: none;
+  }
+  .cell {
+    height: 40px;
+  }
+}

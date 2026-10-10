@@ -72,6 +72,8 @@
 .kv2 dd {
   margin: 0;
   text-align: right;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .kv2 {
@@ -217,6 +219,6 @@
   .grid,
   .mathRow,
   .kv2 {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
