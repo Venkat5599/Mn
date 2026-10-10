@@ -1,9 +1,9 @@
 .tray {
-  --point: 34px;
+  --point: 28px;
   position: relative;
   display: grid;
-  gap: 14px;
-  padding: 16px 16px calc(var(--point) + 22px);
+  gap: 10px;
+  padding: 12px 12px calc(var(--point) + 16px);
   background: linear-gradient(180deg, var(--field-2), var(--field-1));
   /* home plate: square shoulders, then two edges meeting in a point */
   clip-path: polygon(
