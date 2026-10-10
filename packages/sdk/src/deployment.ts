@@ -10,4 +10,6 @@ export interface Deployment {
   market: Address;
   startBlock: number;
   policyId: number;
+  /** MON/USD price-protection AMM */
+  pricePool?: Address;
 }

@@ -11,6 +11,7 @@ import s from "./Sidebar.module.css";
 const I = {
   markets: "M3 17V9m6 8V5m6 12v-6m6 6V3",
   issue: "M12 5v14M5 12h14",
+  shield: "M12 3 4 7v6c0 4 3.5 7 8 8 4.5-1 8-4 8-8V7z",
   portfolio: "M4 7h16v12H4zM9 7V5h6v2",
   funds: "M12 3v18M7 8h7a3 3 0 0 1 0 6H8",
   contracts: "M6 3h9l4 4v14H6zM14 3v5h5",
@@ -33,6 +34,7 @@ export function Sidebar() {
 
   const pages = [
     { href: "/app", label: "Markets", icon: I.markets, count: rows.length, on: path === "/app" || path.startsWith("/app/c/") },
+    { href: "/app/protect", label: "Price protection", icon: I.shield, count: undefined, on: path === "/app/protect" },
     { href: "/app/issue", label: "Issue", icon: I.issue, count: undefined, on: path === "/app/issue" },
     { href: "/app/portfolio", label: "Portfolio", icon: I.portfolio, count: undefined, on: path === "/app/portfolio" },
     { href: "/app/faucet", label: "Test funds", icon: I.funds, count: undefined, on: path === "/app/faucet" },

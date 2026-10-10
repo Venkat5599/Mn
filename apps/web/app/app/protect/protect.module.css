@@ -1,0 +1,210 @@
+.main {
+  display: grid;
+  gap: 18px;
+  padding: 28px 32px 64px;
+  max-width: 1280px;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px 32px;
+}
+
+.ticker {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 12px;
+  align-items: baseline;
+}
+
+.ticker b {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.ticker span {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.ticker small {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.poolStats {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+}
+
+.poolStats dt {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.poolStats dd {
+  margin: 2px 0 0;
+  font-weight: 500;
+}
+
+.poolStats a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+.chartCard {
+  padding: 14px 18px 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chartTitle {
+  font-weight: 600;
+  margin-right: auto;
+}
+
+.tabs button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font: 500 13px var(--body);
+  color: var(--ink-3);
+  padding: 6px 11px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.tabs button.on {
+  color: #fff;
+  background: linear-gradient(180deg, #5a82ff, #3f66f0);
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.block {
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.block h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.block p {
+  margin: 0;
+}
+
+.sub {
+  font-size: 14px;
+  margin: 6px 0 0;
+  color: var(--ink-2);
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.row3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.quote {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.quote b {
+  color: var(--ink);
+}
+
+.note {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.block .btn {
+  justify-self: start;
+}
+
+.sel {
+  background: var(--cyan-dim) !important;
+}
+
+.block tbody tr {
+  cursor: pointer;
+}
+
+.paid {
+  color: var(--green);
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.area {
+  fill: rgba(19, 32, 58, 0.06);
+}
+
+.zero {
+  stroke: var(--ink-4);
+}
+
+.payLine {
+  fill: none;
+  stroke: #13203a;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.lbl {
+  fill: var(--ink-3);
+  font: 11px var(--body);
+}
+
+.markLine {
+  stroke: #19a35d;
+  stroke-dasharray: 4 3;
+}
+
+.markText {
+  fill: #19a35d;
+  font: 600 11px var(--body);
+}
+
+@media (max-width: 1000px) {
+  .cols,
+  .row3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .main {
+    padding: 20px 14px 48px;
+  }
+}

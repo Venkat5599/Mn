@@ -1,0 +1,77 @@
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.grid {
+  stroke: var(--edge);
+}
+.axis {
+  stroke: var(--ink-4);
+}
+.tick {
+  fill: var(--ink-4);
+  font: 11px var(--body);
+}
+.up {
+  stroke: #19b47d;
+  fill: #19b47d;
+}
+.down {
+  stroke: #f07386;
+  fill: #f07386;
+}
+.vol {
+  opacity: 0.35;
+  stroke: none;
+}
+.live {
+  stroke: var(--ink);
+  stroke-dasharray: 3 3;
+}
+.liveTag {
+  fill: var(--ink);
+}
+.liveText {
+  fill: #fff;
+  font: 600 11px var(--body);
+  font-variant-numeric: tabular-nums;
+}
+.strike {
+  stroke: #3f66f0;
+  stroke-width: 1.6;
+  stroke-dasharray: 6 4;
+}
+.strikeLabel {
+  fill: #3f66f0;
+  font: 600 11px var(--body);
+}
+.posStrike {
+  stroke: rgba(63, 102, 240, 0.25);
+}
+.itm {
+  fill: #19a35d;
+  stroke: #fff;
+}
+.otm {
+  fill: #13203a;
+  stroke: #fff;
+}
+.legend text {
+  fill: var(--ink-3);
+  font: 12px var(--body);
+}
+.liveV {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.liveVText {
+  fill: var(--ink);
+  font: 600 12px var(--body);
+}
+.curve {
+  fill: none;
+  stroke: #13203a;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
