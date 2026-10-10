@@ -1,0 +1,16 @@
+{
+  "name": "@hyperhedge/oracle",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Challenges compute hosts with proofs of work, signs 2-of-3 incident reports, runs keeper transitions.",
+  "scripts": {
+    "start": "bun src/index.ts",
+    "demo": "bun scripts/run-demo.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@hyperhedge/sdk": "workspace:*",
+    "viem": "2.31.7"
+  }
+}

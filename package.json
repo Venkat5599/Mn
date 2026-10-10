@@ -4,7 +4,9 @@
   "description": "A collateralized market for GPU compute delivery risk, settled on Monad.",
   "type": "module",
   "workspaces": [
-    "packages/sdk"
+    "packages/sdk",
+    "apps/agent",
+    "apps/oracle"
   ],
   "scripts": {
     "setup": "cd packages/contracts && forge install --no-git foundry-rs/forge-std@v1.17.0 OpenZeppelin/openzeppelin-contracts@v5.1.0",

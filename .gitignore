@@ -39,3 +39,6 @@ packages/contracts/lib/
 
 # design reference export (not shipped)
 stitch_*/
+
+# local run logs
+demo-run.log
