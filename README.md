@@ -1,92 +1,109 @@
-# Pitchside
+# HYPERHEDGE
 
-**Bet your friends on every pitch.** Open a room for a live MLB game and send the link. Before every pitch, everyone calls it: ball, strike, foul or in play. Calls lock 8 seconds after the last pitch, and the room's pot pays out on Monad before the next one is thrown.
+**Protection against GPU compute that is not delivered, priced and settled on Monad.**
 
-Built for Monad Metropolis 2026. Points rooms are free play. Stakes rooms use AUSD and are off wherever real-money play is not allowed. Contracts are **not audited**.
+Live: **https://hyperhedge-app.vercel.app** · Monad testnet (chain 10143)
 
-## Why it only works on Monad
+AI teams prepay for reserved GPU capacity. When a provider under-delivers, the buyer carries the whole loss and the usual remedy is SLA credits from the provider that just failed. HYPERHEDGE turns that delivery risk into a contract with an explicit price:
 
-The gap between two pitches in a real playoff game is a median of 16.7 seconds. The next pitch starts at least 8.7s after the last one ends 99% of the time (measured on gamePk 849834, 294 pitches). Inside that gap a market has to open, take bets, lock and settle. An 8-second calling window is about 26 Monad blocks at 300ms. On Ethereum it is less than one.
+- **The buyer** pays a premium per unit of protection.
+- **The seller** locks the full maximum payout as collateral, so protection can never go unpaid.
+- **The host** proves delivery with real compute during the delivery window, challenge by challenge.
+- **A verified failure** pays the buyer from the collateral, onchain. Delivery returns the collateral plus the premium to the seller.
 
-## How a pitch settles
+## Delivery is proven, not asserted
 
-```
-MLB feed ──► relayer ──reportPitch──► PitchOracle ◄──onReport── Chainlink CRE (DON re-fetches the pitch)
-                │                          │
-                └──settle (keeper)──► PitchsideRooms ◄── bet / join / cashOut ── phone (Mera passkey, room key)
-```
+During the delivery window the oracle sends the seller's host a challenge every few seconds:
 
-1. The relayer posts pitch *n*, which opens market *n+1* with `lockAt = end(n) + 8s`.
-2. Players tap a call. The per-room key signs it silently, with no Face ID per bet.
-3. The keeper settles every room's market *n*. Points rooms settle on the fast report. Stakes rooms settle only once CRE confirms.
-4. Every DON node fetches the pitch by `playId` and maps the call with the **same code** as the relayer. If the two sources disagree, the pitch is voided and refunded.
-5. A bet stamped at or after the pitch's real start time is refunded, whatever the reason (courtsiding, feed lag).
+- **The challenge:** a seed derived from a fresh Monad block hash, so it can't exist before that block and can't be precomputed.
+- **The host's job:** find a nonce where `sha256(seed ‖ nonce)` has *d* leading zero bits. That is about 2^*d* hashes of real work, and checking it takes one hash.
+- **Timing:** an answer that is late, wrong or missing counts as not delivered.
+
+After the deadline:
+
+- **Evidence file:** every challenge, block, seed, nonce and timestamp. Its keccak256 goes onchain with the report.
+- **Signatures:** the report needs 2 of 3 EIP-712 signatures to be accepted.
+- **Anyone can re-check it:** the contract page has a **Verify the evidence yourself** button. It re-derives every seed, re-checks every proof and compares every block hash with the chain, in your browser.
+
+The demo host is a 2-core VPS running `apps/agent`. GPU hosts use the same protocol; the compute class is a field in each contract's SLA.
+
+## The contract
+
+| | |
+|---|---|
+| Payout | binary: `F × M`, where `F` = verified failure (0 or 1), `M` = units × payout per unit |
+| Collateral | `C = M`, fully collateralized at creation |
+| Accounting | free, reserved, premium, payable, bond and fee buckets that never mix; `vault.reconcile()` proves every token is accounted for, onchain |
+| Reports | EIP-712, bound to chain and verifier, 2-of-3 signers, replay-protected, first valid report fixes the outcome |
+| Disputes | 5-minute challenge window; a dispute needs a bond (10% of M), slashed to the other side if the report stands **or if the guardian never rules** |
+| Missing data | never pays out: no report by expiry means the seller is released; an oracle that missed its own window abstains |
+
+Full rules: [`docs/FINANCIAL_MODEL.md`](docs/FINANCIAL_MODEL.md). Product: [`docs/PRD.md`](docs/PRD.md). System: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+## Live deployment (Monad testnet)
+
+| Contract | Address |
+|---|---|
+| ComputeMarket | [`0x9dc5f35B0866bB0a1F046712B38f11E2544D701E`](https://testnet.monadexplorer.com/address/0x9dc5f35B0866bB0a1F046712B38f11E2544D701E) |
+| CollateralVault | [`0xf2aF6d0D92ED7106e064F02087586E4464E029D3`](https://testnet.monadexplorer.com/address/0xf2aF6d0D92ED7106e064F02087586E4464E029D3) |
+| OracleVerifier | [`0xE65E13b3c69c1057FDDdA52CA96B0cB6721eb8D4`](https://testnet.monadexplorer.com/address/0xE65E13b3c69c1057FDDdA52CA96B0cB6721eb8D4) |
+| TestUSD (hhUSD) | [`0xeeBDcA711Cb71A85b791141180a9548206C94063`](https://testnet.monadexplorer.com/address/0xeeBDcA711Cb71A85b791141180a9548206C94063) |
+
+**A real run** (`bun --cwd apps/oracle run demo`):
+
+- **Contract 1, the host delivered:** 12 of 12 proofs answered.
+  - [create](https://testnet.monadexplorer.com/tx/0xa8dfb22eb2766ad526b07afda84ce70d54aa045d7b91323d6225c49d60c6261a), [buy](https://testnet.monadexplorer.com/tx/0xa85851edffb03dd1e9fd1771476d2a760570231564856296487de5bbf653c5b7).
+  - Oracle verdict DELIVERED, evidence `0x3870a52b…8205`.
+- **Contract 2, the host went down:** the agent was stopped on the VPS.
+  - [create](https://testnet.monadexplorer.com/tx/0x5799bba0f8a253f8b4a27af6fc468cf19967caa13e54dabc42ebff4cfebb4de2), [buy](https://testnet.monadexplorer.com/tx/0xeb10cdd6f75655abb072a8a04c71c1afbe3d13359c726169b2f7bbdf62bf072b).
+  - Challenges went unanswered, the oracle reported FAILURE, and the buyer claims the payout.
+
+## Try it (judges)
+
+1. Open **https://hyperhedge-app.vercel.app** with MetaMask or any EVM wallet. It offers to add Monad testnet.
+2. **Test funds:** MON from [faucet.monad.xyz](https://faucet.monad.xyz), then 1,000 hhUSD from the in-app faucet. hhUSD is a test token with no value.
+3. **Buy:** buy protection on an open contract, or **Issue** your own. The host URL defaults to the demo VPS agent.
+4. **Watch:** follow the proof tape fill in during the delivery window, then press **Verify the evidence yourself** after the report.
 
 ## Repository
 
 ```
-contracts/            Foundry: PitchOracle, PitchsideRooms, MockAUSD, tests, Deploy script
-sdk/      One source of truth: outcome enum, MLB call mapping, feed flattening,
-                      CRE confirmation logic, payout math, chains, gas limits, generated ABIs
-backend/relayer/         bun: feed watcher, oracle reporter, settle keeper, CRE trigger, MON drip
-  scripts/replay.ts   end-to-end replay of a real recorded game on anvil
-  scripts/dev-local.ts  local stack with a time-shifted replay game and bot friends
-backend/cre/    Chainlink CRE workflow (HTTP trigger + cron sweep) writing to PitchOracle
-backend/indexer/         Envio HyperIndex: standings, streaks, room feed, latency stats
-frontend/             Next.js PWA: home, create room, room board (strike zone, pads, standings)
-fixtures/mlb/         a real finished game feed (trimmed to the fields Pitchside reads)
-scripts/              ABI generator, demo at-bat extractor
-docs/                 PRD and architecture
+packages/contracts   Foundry: ComputeMarket, CollateralVault, OracleVerifier, TestUSD, Deploy script
+packages/sdk         ABIs, EIP-712 types, SLA commitment, proof-of-work evidence and its verifier
+apps/agent           runs on the compute host: answers proof-of-work challenges
+apps/oracle          challenges hosts, builds evidence, signs 2-of-3 reports, keeper, read-only API
+apps/web             Next.js trading terminal
+docs                 PRD, architecture, financial model
+deployments          addresses per chain
 ```
 
 ## Run it
 
-Requires [bun](https://bun.sh) 1.3+ and [Foundry](https://getfoundry.sh).
+Needs [bun](https://bun.sh) 1.3+ and [Foundry](https://getfoundry.sh).
 
 ```bash
 bun install
-bun run setup               # forge-std + OpenZeppelin into contracts/lib
-bun run abi                 # build contracts, regenerate typed ABIs
-bun run test                # shared + relayer unit tests, then forge tests
-bun run replay              # real game, real contracts, local chain: must print "replay PASS"
+bun run setup                 # forge-std + OpenZeppelin
+bun run test                  # sdk tests, then 42 Foundry tests + conservation invariants
+bun run abi                   # regenerate ABIs after contract changes
+bun --cwd apps/web run dev    # terminal on http://localhost:3000
 ```
 
-**Local app with a simulated game** (a replay of a finished game, labelled as such in the UI):
+Deploy your own: put `DEPLOYER_PRIVATE_KEY` and `SIGNER_{1,2,3}_ADDRESS` in `.env`, then run `forge script script/Deploy.s.sol --rpc-url $MONAD_TESTNET_RPC_URL --broadcast` from `packages/contracts`.
 
-```bash
-bun run dev:local           # anvil + contracts + replayed feed + relayer + drip + 3 bot friends
-bun run dev:web             # http://localhost:3000
-```
-
-`dev:local` writes `frontend/.env.local` with `NEXT_PUBLIC_ACCOUNT_MODE=device`, so the app uses a browser-only key and says so on screen. Passkeys need a real device. Use `passkey` mode over HTTPS on an iPhone with iCloud Keychain, or on Android or desktop Chrome with Google Password Manager.
-
-**Testnet**
-
-```bash
-cd contracts
-RELAYER_ADDRESS=0x... CRE_FORWARDER=0x... AUSD_ADDRESS=0x... \
-  forge script script/Deploy.s.sol --rpc-url monad_testnet --broadcast --private-key $DEPLOYER_PRIVATE_KEY
-# write deployments/10143.json, then:
-cp backend/relayer/.env.example backend/relayer/.env    # fill in RPC, key, GAME_PK
-bun run dev:relayer
-```
-
-If `AUSD_ADDRESS` is unset, a test-only MockAUSD is deployed. The deploy script refuses to do that on mainnet.
-
-## Verified in this repo
+## Verified
 
 | Check | Result |
 |---|---|
-| Foundry unit, fuzz (512 runs), chip-conservation invariant (8,192 calls) and 32-player gas budget | 51 / 51 pass |
-| Shared mapping, feed, confirmation and payout tests on the real game | 16 / 16 pass |
-| Full replay of gamePk 849834 on anvil | 294 pitches reported and CRE-confirmed, 2,640 bets, 588 markets settled, stake tokens conserved |
-| Web production build | passes |
-| Browser flow (home, create room, join, call, result) in headless Chrome at 390px and 1440px | passes, no console errors, no horizontal overflow |
+| Foundry unit + fuzz, every edge case in the financial model | 42 / 42 pass |
+| Invariants (vault reconciles, collateral covers liabilities) over random action sequences | pass |
+| SDK: proof-of-work, SLA commitment, evidence recount and tamper detection | 8 / 8 pass |
+| Delivered and failed lifecycles on Monad testnet | see the run above |
 
-## Not done yet, stated plainly
+## Known limits, stated plainly
 
-- **Not run on Monad testnet yet.** Everything above ran on a local anvil.
-- **CRE workflow is typechecked, not compiled or simulated.** The CRE CLI is not installed here. The HTTP trigger also needs signed requests from an authorized key, so the relayer's trigger call has to go through the CRE gateway. Until that is wired, the cron sweep is the confirmation path. If CRE cannot write to Monad in time, run `cre workflow simulate` and label confirmations "CRE-simulated", never live.
-- **Envio indexer is written but not code-generated or run.** The app does not depend on it: standings come from chain reads.
-- **Passkey flow not tested on a phone.** It follows Mera's documented API (`@category-labs/mera` 0.2.0).
-- **MLB Stats API terms are non-commercial.** Fine for a demo; production needs a licensed feed.
+- **Not audited.** Testnet only, with a test token.
+- **One operator runs all three signers in the demo.** The quorum is real onchain; independent signer operators are the next step.
+- **The guardian is trusted** to resolve disputes. It is bounded by a deadline and the bond rules.
+- **Timestamps in the evidence are the oracle's clock.** The proofs and block-bound seeds are what anyone can check.
+- **The demo host is a CPU VPS.** A GPU provider pilot is the path forward.

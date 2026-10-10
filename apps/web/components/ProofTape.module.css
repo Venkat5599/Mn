@@ -1,0 +1,79 @@
+.tape {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.cells {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  gap: 4px;
+  padding-top: 10px;
+}
+
+.cell {
+  height: 54px;
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  color: rgba(18, 18, 17, 0.7);
+  overflow: hidden;
+}
+
+.compact .cell {
+  height: 22px;
+  border-radius: 3px;
+}
+
+.proven {
+  background: linear-gradient(180deg, #a3d0d5, var(--cyan));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.missed {
+  box-shadow: inset 0 0 0 1.5px var(--red);
+  background: var(--red-dim);
+}
+
+.pending {
+  box-shadow: inset 0 0 0 1.5px var(--amber);
+  background: var(--amber-dim);
+  animation: breathe 1.4s ease-in-out infinite;
+}
+
+.future {
+  background: rgba(236, 233, 226, 0.035);
+  box-shadow: inset 0 0 0 1px var(--edge);
+}
+
+/* the required-solves line: proofs left of it are what delivery needs */
+.threshold {
+  position: absolute;
+  top: 0;
+  bottom: -4px;
+  width: 2px;
+  margin-left: -3px;
+  border-radius: 2px;
+  background: var(--ink-3);
+}
+
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.caption b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+@keyframes breathe {
+  50% {
+    background: rgba(214, 178, 110, 0.24);
+  }
+}

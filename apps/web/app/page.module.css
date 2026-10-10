@@ -1,0 +1,142 @@
+.main {
+  display: grid;
+  gap: 56px;
+  padding: 48px 0 96px;
+}
+
+.lead {
+  display: grid;
+  gap: 16px;
+}
+
+.title {
+  font-size: clamp(30px, 4.4vw, 54px);
+  line-height: 1.08;
+  max-width: 22ch;
+}
+
+.title em {
+  font-style: normal;
+  color: var(--ink-3);
+}
+
+.sub {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--ink-2);
+  font-size: 16px;
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.tapePanel {
+  padding: 24px;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.tapeHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  font-size: 13px;
+}
+
+.tapeTitle {
+  font-family: var(--display);
+  font-size: 22px;
+  text-decoration: none;
+}
+
+.tapeNote {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.vault {
+  margin: 0;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding: 4px 0;
+}
+
+.vault dt {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.vault dd {
+  margin: 2px 0 0;
+  font-size: 24px;
+}
+
+.reconcile dd {
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ok {
+  color: var(--green);
+}
+
+.bad {
+  color: var(--red);
+}
+
+.unit {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-4);
+}
+
+.rowHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.rowHead h2 {
+  font-size: 26px;
+}
+
+.math {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.math > div {
+  padding: 22px;
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.math h3 {
+  font-size: 20px;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+  .stage,
+  .math {
+    grid-template-columns: 1fr;
+  }
+  .vault {
+    grid-template-columns: 1fr 1fr;
+  }
+}

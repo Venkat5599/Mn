@@ -42,3 +42,9 @@ stitch_*/
 
 # local run logs
 demo-run.log
+
+.vercel
+.env*.local
+
+# planning notes
+Plans/

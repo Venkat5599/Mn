@@ -34,7 +34,11 @@ const d = (await Bun.file(new URL("../../../deployments/10143.json", import.meta
 const rpc = process.env.MONAD_TESTNET_RPC_URL ?? monadTestnet.rpcUrls.default.http[0]!;
 const pub = createPublicClient({ chain: monadTestnet, transport: http(rpc, { retryCount: 3 }) });
 const seller = privateKeyToAccount(process.env.DEPLOYER_PRIVATE_KEY as Hex);
-const buyer = privateKeyToAccount(generatePrivateKey());
+// Persist the demo buyer so funds sent to it are never stranded by a failed run.
+const buyerKeyFile = Bun.file(new URL("../.state/demo-buyer.key", import.meta.url));
+const buyerKey = (await buyerKeyFile.exists()) ? ((await buyerKeyFile.text()).trim() as Hex) : generatePrivateKey();
+if (!(await buyerKeyFile.exists())) await Bun.write(buyerKeyFile, buyerKey);
+const buyer = privateKeyToAccount(buyerKey);
 const wallet = (acct: typeof seller) => createWalletClient({ chain: monadTestnet, account: acct, transport: http(rpc) });
 
 const USD = 1_000_000n;
@@ -92,7 +96,7 @@ async function create(label: string): Promise<{ id: bigint; deadline: number }> 
     underlying: stringToHex("H100-80GB-GPUh", { size: 32 }),
     quantity: 1_000n,
     slaHash: slaHash(sla),
-    units: 10n,
+    units: 1n,
     payoutPerUnit: 100n * USD,
     premiumPerUnit: 10n * USD,
     feeBps: 0,
@@ -109,11 +113,11 @@ async function create(label: string): Promise<{ id: bigint; deadline: number }> 
   });
   const created = r.logs.find((l) => l.address.toLowerCase() === d.market.toLowerCase() && l.topics.length > 2);
   const id = BigInt(created!.topics[1]!);
-  await send(buyer, `buy 10 units (${label})`, {
+  await send(buyer, `buy 1 unit (${label})`, {
     address: d.market,
     abi: computeMarketAbi,
     functionName: "buy",
-    args: [id, 10n, 100n * USD],
+    args: [id, 1n, 10n * USD],
   });
   console.log(`  contract ${id}: window ${new Date(saleEnd * 1000).toISOString()} → ${new Date(deadline * 1000).toISOString()}`);
   return { id, deadline };
@@ -129,19 +133,21 @@ const fund = await sw.sendTransaction({ to: buyer.address, value: parseEther("0.
 await pub.waitForTransactionReceipt({ hash: fund });
 step("MON to buyer", fund);
 const bal = await pub.readContract({ address: d.token, abi: tokenAbi, functionName: "balanceOf", args: [seller.address] });
-if (bal < 3_000n * USD) {
+if (bal < 1_000n * USD) {
   try {
     await send(seller, "hhUSD faucet (seller)", { address: d.token, abi: tokenAbi, functionName: "faucet" });
   } catch {
     console.log("  faucet on cooldown, using existing balance");
   }
 }
-await send(seller, "hhUSD to buyer", { address: d.token, abi: tokenAbi, functionName: "transfer", args: [buyer.address, 300n * USD] });
+await send(seller, "hhUSD to buyer", { address: d.token, abi: tokenAbi, functionName: "transfer", args: [buyer.address, 20n * USD] });
 await send(seller, "approve vault (seller)", { address: d.token, abi: tokenAbi, functionName: "approve", args: [d.vault, 2n ** 255n] });
 await send(buyer, "approve vault (buyer)", { address: d.token, abi: tokenAbi, functionName: "approve", args: [d.vault, 2n ** 255n] });
 const free = await pub.readContract({ address: d.vault, abi: collateralVaultAbi, functionName: "free", args: [seller.address] });
-if (free < 2_000n * USD)
-  await send(seller, "deposit collateral", { address: d.vault, abi: collateralVaultAbi, functionName: "deposit", args: [2_000n * USD - free] });
+const wallet_ = await pub.readContract({ address: d.token, abi: tokenAbi, functionName: "balanceOf", args: [seller.address] });
+if (free + wallet_ < 200n * USD) throw new Error(`seller has ${(free + wallet_) / USD} hhUSD, needs 200; faucet again after its cooldown`);
+if (free < 200n * USD)
+  await send(seller, "deposit collateral", { address: d.vault, abi: collateralVaultAbi, functionName: "deposit", args: [200n * USD - free] });
 
 // ── A: the host delivers ──
 if (ONLY !== "b") {
