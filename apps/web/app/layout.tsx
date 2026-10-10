@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { WalletProvider } from "@/components/Wallet";
+import { Providers } from "@/components/Providers";
 import "./globals.css";
 
-// Sentient (Indian Type Foundry, via Fontshare, free licence), self-hosted.
+// Sentient and Switzer (Indian Type Foundry, via Fontshare, free licence), self-hosted.
 const sentient = localFont({
   src: [
     { path: "./fonts/Sentient-Regular.woff2", weight: "400" },
@@ -14,6 +14,16 @@ const sentient = localFont({
   display: "swap",
 });
 
+const switzer = localFont({
+  src: [
+    { path: "./fonts/Switzer-400.woff2", weight: "400" },
+    { path: "./fonts/Switzer-500.woff2", weight: "500" },
+    { path: "./fonts/Switzer-600.woff2", weight: "600" },
+  ],
+  variable: "--font-switzer",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "HYPERHEDGE",
   description:
@@ -21,15 +31,13 @@ export const metadata: Metadata = {
   icons: { icon: "/icon.svg" },
 };
 
-export const viewport: Viewport = { themeColor: "#121211", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#1b211e", width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={sentient.variable}>
+    <html lang="en" className={`${sentient.variable} ${switzer.variable}`}>
       <body>
-        <WalletProvider>
-          {children}
-        </WalletProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

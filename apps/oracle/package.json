@@ -11,6 +11,6 @@
   },
   "dependencies": {
     "@hyperhedge/sdk": "workspace:*",
-    "viem": "2.31.7"
+    "viem": "2.57.4"
   }
 }

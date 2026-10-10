@@ -8,4 +8,10 @@ export default {
   async rewrites() {
     return [{ source: "/api/oracle/:path*", destination: `${ORACLE_URL}/:path*` }];
   },
+  webpack(config, { webpack }) {
+    // wagmi's connector bundle reaches optional server/payment packages a browser wallet app never loads
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /^@x402\// }));
+    config.externals.push("pino-pretty", "lokijs", "encoding");
+    return config;
+  },
 };

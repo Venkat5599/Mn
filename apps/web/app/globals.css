@@ -137,6 +137,10 @@ h3 {
 /* buttons: one shape, state by tone, never a lift */
 .btn {
   appearance: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font: 600 14px/1 var(--body);
   color: var(--bg);
   background: var(--ink);

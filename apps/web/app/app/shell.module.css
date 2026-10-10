@@ -1,21 +1,72 @@
+/* The dashboard is a light workspace: the same tokens, re-valued, so every page inside follows. */
 .shell {
+  --bg: #f3f5f9;
+  --bg-sunk: #eef1f6;
+  --panel: #ffffff;
+  --panel-up: #ffffff;
+  --edge: rgba(24, 34, 58, 0.08);
+  --edge-strong: rgba(24, 34, 58, 0.15);
+  --ink: #1b2233;
+  --ink-2: #485267;
+  --ink-3: #7a8398;
+  --ink-4: #a6aec0;
+  --cyan: #3f66f0;
+  --cyan-dim: rgba(63, 102, 240, 0.12);
+  --green: #13a874;
+  --green-dim: rgba(19, 168, 116, 0.12);
+  --amber: #d98e1f;
+  --amber-dim: rgba(217, 142, 31, 0.13);
+  --red: #e5536a;
+  --red-dim: rgba(229, 83, 106, 0.12);
+  --body: var(--font-switzer), system-ui, sans-serif;
+  --display: var(--font-switzer), system-ui, sans-serif;
+
   display: grid;
-  grid-template-columns: 232px minmax(0, 1fr);
+  grid-template-columns: 250px minmax(0, 1fr);
   min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  isolation: isolate;
 }
 
 .content {
   min-width: 0;
 }
 
-/* pages inside the dashboard use the full content column */
 .content :global(.wrap) {
-  width: min(1180px, 100%);
+  width: min(1240px, 100%);
   margin: 0;
+}
+
+.content :global(.panel) {
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  box-shadow: 0 1px 2px rgba(24, 34, 58, 0.04);
+  border-radius: 12px;
+}
+
+.content :global(h1),
+.content :global(h2),
+.content :global(h3) {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.content :global(input),
+.content :global(select) {
+  background: #fff;
 }
 
 @media (max-width: 860px) {
   .shell {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.content :global(.num),
+.content :global(.mono) {
+  font-family: var(--body);
+  font-variant-numeric: tabular-nums;
 }
