@@ -26,14 +26,14 @@ MLB feed ──► relayer ──reportPitch──► PitchOracle ◄──onRep
 
 ```
 contracts/            Foundry: PitchOracle, PitchsideRooms, MockAUSD, tests, Deploy script
-packages/shared/      One source of truth: outcome enum, MLB call mapping, feed flattening,
+sdk/      One source of truth: outcome enum, MLB call mapping, feed flattening,
                       CRE confirmation logic, payout math, chains, gas limits, generated ABIs
-apps/relayer/         bun: feed watcher, oracle reporter, settle keeper, CRE trigger, MON drip
+backend/relayer/         bun: feed watcher, oracle reporter, settle keeper, CRE trigger, MON drip
   scripts/replay.ts   end-to-end replay of a real recorded game on anvil
   scripts/dev-local.ts  local stack with a time-shifted replay game and bot friends
-apps/cre-workflow/    Chainlink CRE workflow (HTTP trigger + cron sweep) writing to PitchOracle
-apps/indexer/         Envio HyperIndex: standings, streaks, room feed, latency stats
-apps/web/             Next.js PWA: home, create room, room board (strike zone, pads, standings)
+backend/cre/    Chainlink CRE workflow (HTTP trigger + cron sweep) writing to PitchOracle
+backend/indexer/         Envio HyperIndex: standings, streaks, room feed, latency stats
+frontend/             Next.js PWA: home, create room, room board (strike zone, pads, standings)
 fixtures/mlb/         a real finished game feed (trimmed to the fields Pitchside reads)
 scripts/              ABI generator, demo at-bat extractor
 docs/                 PRD and architecture
@@ -58,7 +58,7 @@ bun run dev:local           # anvil + contracts + replayed feed + relayer + drip
 bun run dev:web             # http://localhost:3000
 ```
 
-`dev:local` writes `apps/web/.env.local` with `NEXT_PUBLIC_ACCOUNT_MODE=device`, so the app uses a browser-only key and says so on screen. Passkeys need a real device. Use `passkey` mode over HTTPS on an iPhone with iCloud Keychain, or on Android or desktop Chrome with Google Password Manager.
+`dev:local` writes `frontend/.env.local` with `NEXT_PUBLIC_ACCOUNT_MODE=device`, so the app uses a browser-only key and says so on screen. Passkeys need a real device. Use `passkey` mode over HTTPS on an iPhone with iCloud Keychain, or on Android or desktop Chrome with Google Password Manager.
 
 **Testnet**
 
@@ -67,7 +67,7 @@ cd contracts
 RELAYER_ADDRESS=0x... CRE_FORWARDER=0x... AUSD_ADDRESS=0x... \
   forge script script/Deploy.s.sol --rpc-url monad_testnet --broadcast --private-key $DEPLOYER_PRIVATE_KEY
 # write deployments/10143.json, then:
-cp apps/relayer/.env.example apps/relayer/.env    # fill in RPC, key, GAME_PK
+cp backend/relayer/.env.example backend/relayer/.env    # fill in RPC, key, GAME_PK
 bun run dev:relayer
 ```
 

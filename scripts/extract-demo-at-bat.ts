@@ -3,7 +3,7 @@
  * home page's strike-zone replay. Real pitches, nothing invented.
  *   bun scripts/extract-demo-at-bat.ts
  */
-import { flattenPitches, type MlbFeed } from "../packages/shared/src";
+import { flattenPitches, type MlbFeed } from "../sdk/src";
 import { join } from "node:path";
 
 const root = join(import.meta.dir, "..");
@@ -35,5 +35,5 @@ const out = {
     strikes: p.strikes,
   })),
 };
-await Bun.write(join(root, "apps/web/src/lib/demo-at-bat.json"), JSON.stringify(out, null, 2));
+await Bun.write(join(root, "frontend/src/lib/demo-at-bat.json"), JSON.stringify(out, null, 2));
 console.log(`${out.batter} vs ${out.pitcher}: ${out.pitches.length} pitches`, out.pitches.map((p) => p.call).join(", "));

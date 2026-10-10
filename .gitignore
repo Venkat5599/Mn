@@ -17,7 +17,7 @@ contracts/broadcast/**/dry-run/
 !.env.example
 
 # runtime state
-apps/relayer/.state/
+backend/relayer/.state/
 
 # private research, never public
 ideas/

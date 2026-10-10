@@ -284,12 +284,12 @@ Not audited. Never label it secure or production-ready.
 ```
 contracts/            Foundry: src/PitchOracle.sol, src/PitchsideRooms.sol, src/mocks/MockAUSD.sol,
                       test/ (unit, fuzz, invariant), script/Deploy.s.sol
-packages/shared/      outcome, mapping, feed, confirm (CRE logic), payout, drip, chains, gas, abi/
-apps/relayer/         src/: feed-source, oracle-reporter, settle-keeper, cre-trigger, drip-server, state
+sdk/      outcome, mapping, feed, confirm (CRE logic), payout, drip, chains, gas, abi/
+backend/relayer/         src/: feed-source, oracle-reporter, settle-keeper, cre-trigger, drip-server, state
                       scripts/: replay.ts (real game, local chain), dev-local.ts (local app stack)
-apps/cre-workflow/    src/main.ts (HTTP trigger + cron sweep), config.staging.json
-apps/indexer/         config.yaml, schema.graphql, src/EventHandlers.ts (Envio)
-apps/web/             Next.js: app/ (home, new, r/[roomId], api/region), components/, hooks/, lib/
+backend/cre/    src/main.ts (HTTP trigger + cron sweep), config.staging.json
+backend/indexer/         config.yaml, schema.graphql, src/EventHandlers.ts (Envio)
+frontend/             Next.js: app/ (home, new, r/[roomId], api/region), components/, hooks/, lib/
 fixtures/mlb/         feed-849834-final.json (real finished game, trimmed)
 deployments/          <chainId>.json written after deploy
 docs/                 PRD.md, ARCHITECTURE.md

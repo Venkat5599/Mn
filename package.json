@@ -3,18 +3,23 @@
   "private": true,
   "description": "Bet your friends on every pitch. Per-pitch parimutuel rooms on Monad.",
   "type": "module",
-  "workspaces": ["packages/*", "apps/relayer", "apps/cre-workflow", "apps/web"],
+  "workspaces": [
+    "sdk",
+    "backend/relayer",
+    "backend/cre",
+    "frontend"
+  ],
   "scripts": {
     "setup": "cd contracts && forge install --no-git foundry-rs/forge-std@v1.17.0 OpenZeppelin/openzeppelin-contracts@v5.1.0",
     "build:contracts": "cd contracts && forge build",
     "test:contracts": "cd contracts && forge test",
     "abi": "bun scripts/gen-abi.ts",
-    "test": "bun test packages apps/relayer && bun run test:contracts",
-    "typecheck": "bun run --filter '*' typecheck",
-    "replay": "bun --cwd apps/relayer run replay",
-    "dev:web": "bun --cwd apps/web run dev",
-    "dev:relayer": "bun --cwd apps/relayer run start",
-    "dev:local": "bun --cwd apps/relayer run dev:local"
+    "test": "bun test sdk && bun run test:contracts",
+    "replay": "bun --cwd backend/relayer run replay",
+    "dev:local": "bun --cwd backend/relayer run dev:local",
+    "dev:relayer": "bun --cwd backend/relayer run start",
+    "dev:web": "bun --cwd frontend run dev",
+    "build:web": "bun --cwd frontend run build"
   },
   "devDependencies": {
     "@types/bun": "1.2.20",

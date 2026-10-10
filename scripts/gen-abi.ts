@@ -1,5 +1,5 @@
 /**
- * Builds the contracts and writes typed `as const` ABIs into packages/shared/src/abi.
+ * Builds the contracts and writes typed `as const` ABIs into sdk/src/abi.
  * Run after any contract change: `bun run abi`.
  */
 import { $ } from "bun";
@@ -7,7 +7,7 @@ import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 
 const root = join(import.meta.dir, "..");
-const outDir = join(root, "packages/shared/src/abi");
+const outDir = join(root, "sdk/src/abi");
 
 const CONTRACTS = [
   { file: "PitchOracle.sol", name: "PitchOracle", exportName: "pitchOracleAbi" },

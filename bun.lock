@@ -9,30 +9,30 @@
         "typescript": "5.8.3",
       },
     },
-    "apps/cre-workflow": {
-      "name": "@pitchside/cre-workflow",
+    "backend/cre": {
+      "name": "@pitchside/cre",
       "version": "0.1.0",
       "dependencies": {
         "@chainlink/cre-sdk": "1.23.0",
-        "@pitchside/shared": "workspace:*",
+        "@pitchside/sdk": "workspace:*",
         "viem": "2.31.7",
         "zod": "3.25.76",
       },
     },
-    "apps/relayer": {
+    "backend/relayer": {
       "name": "@pitchside/relayer",
       "version": "0.1.0",
       "dependencies": {
-        "@pitchside/shared": "workspace:*",
+        "@pitchside/sdk": "workspace:*",
         "viem": "2.31.7",
       },
     },
-    "apps/web": {
-      "name": "@pitchside/web",
+    "frontend": {
+      "name": "@pitchside/frontend",
       "version": "0.1.0",
       "dependencies": {
         "@category-labs/mera": "0.2.0",
-        "@pitchside/shared": "workspace:*",
+        "@pitchside/sdk": "workspace:*",
         "@scure/bip32": "2.0.1",
         "@scure/bip39": "2.0.1",
         "motion": "12.23.12",
@@ -46,8 +46,8 @@
         "@types/react-dom": "19.1.9",
       },
     },
-    "packages/shared": {
-      "name": "@pitchside/shared",
+    "sdk": {
+      "name": "@pitchside/sdk",
       "version": "0.1.0",
       "dependencies": {
         "viem": "2.31.7",
@@ -145,13 +145,13 @@
 
     "@noble/hashes": ["@noble/hashes@2.2.0", "", {}, "sha512-IYqDGiTXab6FniAgnSdZwgWbomxpy9FtYvLKs7wCUs2a8RkITG+DFGO1DM9cr+E3/RgADRpFjrKVaJ1z6sjtEg=="],
 
-    "@pitchside/cre-workflow": ["@pitchside/cre-workflow@workspace:apps/cre-workflow"],
+    "@pitchside/cre": ["@pitchside/cre@workspace:backend/cre"],
 
-    "@pitchside/relayer": ["@pitchside/relayer@workspace:apps/relayer"],
+    "@pitchside/frontend": ["@pitchside/frontend@workspace:frontend"],
 
-    "@pitchside/shared": ["@pitchside/shared@workspace:packages/shared"],
+    "@pitchside/relayer": ["@pitchside/relayer@workspace:backend/relayer"],
 
-    "@pitchside/web": ["@pitchside/web@workspace:apps/web"],
+    "@pitchside/sdk": ["@pitchside/sdk@workspace:sdk"],
 
     "@scure/base": ["@scure/base@2.2.0", "", {}, "sha512-b8XEupJibegiXV+tDUseI8oLQc8ei3d/4Jkb2RpbHh3MfE054ov3uIz2dhFkB3FI8iwYkEh0gGCApkrYggkPNg=="],
 
