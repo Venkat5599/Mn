@@ -1,0 +1,46 @@
+{
+  "grammar": "t2_keynote_ui",
+  "duration": 5.2,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "bg": "#EEF3F8",
+    "surface": "#FFFFFF",
+    "ink": "#0B1526",
+    "sub": "#46516A",
+    "accent": "#1A54B0",
+    "accent2": "#1F9D55"
+  },
+  "cues": [
+    {
+      "at": 0,
+      "kind": "card",
+      "text": "Seeded by Monad blocks",
+      "image": "C:/Users/ksubh/OneDrive/Pictures/MOnad hackahton/video/public/shots/c1.png"
+    },
+    {
+      "at": 1.04,
+      "kind": "highlight",
+      "text": "Fresh seed each time",
+      "data": {
+        "rect": [
+          0.155,
+          0.75,
+          0.62,
+          0.04
+        ]
+      }
+    },
+    {
+      "at": 2.86,
+      "kind": "number",
+      "text": "seconds between challenges",
+      "data": {
+        "value": 15,
+        "suffix": " s",
+        "over": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "grammar": "t2_keynote_ui",
+  "duration": 4.9,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "bg": "#EEF3F8",
+    "surface": "#FFFFFF",
+    "ink": "#0B1526",
+    "sub": "#46516A",
+    "accent": "#1A54B0",
+    "accent2": "#1F9D55"
+  },
+  "cues": [
+    {
+      "at": 0,
+      "kind": "card",
+      "text": "2 of 3 signers report",
+      "image": "C:/Users/ksubh/OneDrive/Pictures/MOnad hackahton/video/public/shots/c2-verify.png"
+    },
+    {
+      "at": 1.715,
+      "kind": "highlight",
+      "text": "Re-checked in your browser",
+      "data": {
+        "rect": [
+          0.16,
+          0.46,
+          0.26,
+          0.06
+        ]
+      }
+    }
+  ]
+}

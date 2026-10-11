@@ -1,0 +1,36 @@
+{
+  "grammar": "t2_keynote_ui",
+  "duration": 5.833,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "bg": "#EEF3F8",
+    "surface": "#FFFFFF",
+    "ink": "#0B1526",
+    "sub": "#46516A",
+    "accent": "#1A54B0",
+    "accent2": "#1F9D55"
+  },
+  "cues": [
+    {
+      "at": 0,
+      "kind": "card",
+      "text": "Live on Monad testnet",
+      "image": "C:/Users/ksubh/OneDrive/Pictures/MOnad hackahton/video/public/shots/settlements.png"
+    },
+    {
+      "at": 1.75,
+      "kind": "highlight",
+      "text": "3 lifecycles",
+      "data": {
+        "rect": [
+          0.145,
+          0.36,
+          0.64,
+          0.19
+        ]
+      }
+    }
+  ]
+}

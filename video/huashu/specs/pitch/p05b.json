@@ -1,0 +1,36 @@
+{
+  "grammar": "t2_keynote_ui",
+  "duration": 4.5,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "bg": "#EEF3F8",
+    "surface": "#FFFFFF",
+    "ink": "#0B1526",
+    "sub": "#46516A",
+    "accent": "#1A54B0",
+    "accent2": "#1F9D55"
+  },
+  "cues": [
+    {
+      "at": 0,
+      "kind": "card",
+      "text": "Protection never goes unpaid",
+      "image": "C:/Users/ksubh/OneDrive/Pictures/MOnad hackahton/video/public/shots/c1.png"
+    },
+    {
+      "at": 1.575,
+      "kind": "highlight",
+      "text": "Equal to the max payout",
+      "data": {
+        "rect": [
+          0.455,
+          0.625,
+          0.3,
+          0.045
+        ]
+      }
+    }
+  ]
+}

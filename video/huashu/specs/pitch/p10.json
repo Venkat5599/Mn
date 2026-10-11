@@ -1,0 +1,45 @@
+{
+  "grammar": "t2_keynote_ui",
+  "duration": 3.967,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "bg": "#EEF3F8",
+    "surface": "#FFFFFF",
+    "ink": "#0B1526",
+    "sub": "#46516A",
+    "accent": "#1A54B0",
+    "accent2": "#1F9D55"
+  },
+  "cues": [
+    {
+      "at": 0,
+      "kind": "card",
+      "text": "Built for a fast chain",
+      "image": "C:/Users/ksubh/OneDrive/Pictures/MOnad hackahton/video/public/shots/c1.png"
+    },
+    {
+      "at": 0.992,
+      "kind": "highlight",
+      "data": {
+        "rect": [
+          0.155,
+          0.72,
+          0.62,
+          0.04
+        ]
+      }
+    },
+    {
+      "at": 1.984,
+      "kind": "number",
+      "text": "Monad block time",
+      "data": {
+        "value": 300,
+        "suffix": " ms",
+        "over": true
+      }
+    }
+  ]
+}

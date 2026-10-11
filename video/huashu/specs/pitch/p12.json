@@ -1,0 +1,46 @@
+{
+  "grammar": "t2_keynote_ui",
+  "duration": 5.8,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "bg": "#EEF3F8",
+    "surface": "#FFFFFF",
+    "ink": "#0B1526",
+    "sub": "#46516A",
+    "accent": "#1A54B0",
+    "accent2": "#1F9D55"
+  },
+  "cues": [
+    {
+      "at": 0,
+      "kind": "card",
+      "text": "Every token accounted for",
+      "image": "C:/Users/ksubh/OneDrive/Pictures/MOnad hackahton/video/public/shots/liquidity.png"
+    },
+    {
+      "at": 1.16,
+      "kind": "highlight",
+      "text": "reconcile() OK",
+      "data": {
+        "rect": [
+          0.145,
+          0.21,
+          0.32,
+          0.38
+        ]
+      }
+    },
+    {
+      "at": 3.19,
+      "kind": "number",
+      "text": "Foundry tests pass",
+      "data": {
+        "value": 69,
+        "suffix": " / 69",
+        "over": true
+      }
+    }
+  ]
+}

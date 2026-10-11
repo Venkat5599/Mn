@@ -1,0 +1,46 @@
+{
+  "grammar": "t2_keynote_ui",
+  "duration": 4.5,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "bg": "#EEF3F8",
+    "surface": "#FFFFFF",
+    "ink": "#0B1526",
+    "sub": "#46516A",
+    "accent": "#1A54B0",
+    "accent2": "#1F9D55"
+  },
+  "cues": [
+    {
+      "at": 0,
+      "kind": "card",
+      "text": "Seller locks the payout",
+      "image": "C:/Users/ksubh/OneDrive/Pictures/MOnad hackahton/video/public/shots/c4.png"
+    },
+    {
+      "at": 1.125,
+      "kind": "highlight",
+      "text": "Locked first",
+      "data": {
+        "rect": [
+          0.455,
+          0.725,
+          0.3,
+          0.045
+        ]
+      }
+    },
+    {
+      "at": 2.79,
+      "kind": "number",
+      "text": "locked before the sale",
+      "data": {
+        "value": 900,
+        "suffix": " hhUSD",
+        "over": true
+      }
+    }
+  ]
+}
