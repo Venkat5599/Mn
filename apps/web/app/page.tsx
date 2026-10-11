@@ -1,57 +1,84 @@
 "use client";
 
+import { STATE_LABEL, State, type State as StateT } from "@hyperhedge/sdk";
 import Link from "next/link";
-import { useState } from "react";
-import { GlyphField } from "@/components/GlyphField";
+import { useMemo, useState } from "react";
 import { Mark } from "@/components/Mark";
-import { addrLink, deployment } from "@/lib/chain";
-import { loadContracts, loadOracle, loadVault, usePoll } from "@/lib/data";
-import { short, usd } from "@/lib/format";
+import { addrLink, deployment, txLink } from "@/lib/chain";
+import { loadContracts, loadOracle, loadOracleContract, loadVault, usePoll } from "@/lib/data";
+import { bytes32Label, short, usd } from "@/lib/format";
+import { P8, loadPoolState } from "@/lib/pool";
 import s from "./landing.module.css";
 
 const NAV = [
   { href: "#top", label: "Home" },
-  { href: "#about", label: "Product" },
-  { href: "#how", label: "How it works" },
-  { href: "#protocol", label: "Protocol" },
-  { href: "#settlement", label: "Settlement" },
+  { href: "#product", label: "Product" },
+  { href: "#proof", label: "Proofs" },
+  { href: "#protect", label: "Price Protection" },
+  { href: "#roles", label: "Who It's For" },
 ];
 
-const Arrow = () => (
-  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+const Arrow = ({ size = 12 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 12 12" aria-hidden="true">
     <path d="M3.5 8.5 8.5 3.5M4.5 3.5h4v4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
-const Chip = ({ children, light = false }: { children: React.ReactNode; light?: boolean }) => (
-  <span className={`${s.chip} ${light ? s.chipLight : ""}`}>
-    <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
-      <path d="M1.5 9V5M5 9V1M8.5 9V3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+const Tick = ({ ok }: { ok: boolean | null }) =>
+  ok === null ? (
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" className={s.tickWait}>
+      <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" fill="none" strokeDasharray="3 3" />
     </svg>
-    {children}
-  </span>
-);
+  ) : ok ? (
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" className={s.tickOk}>
+      <circle cx="8" cy="8" r="7" fill="currentColor" />
+      <path d="m5 8.2 2 2 4-4.4" stroke="#fff" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ) : (
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" className={s.tickMiss}>
+      <circle cx="8" cy="8" r="7" fill="currentColor" />
+      <path d="m5.5 5.5 5 5m0-5-5 5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+
+const SIDE = ["Markets", "Price Protection", "Portfolio", "Evidence Center", "Settlements"];
 
 export default function Landing() {
   const [menu, setMenu] = useState(false);
-  const rows = usePoll(loadContracts, 10_000, []).data ?? [];
-  const oracle = usePoll(loadOracle, 10_000, []).data ?? [];
+  const rows = usePoll(loadContracts, 12_000, []).data ?? [];
+  const oracle = usePoll(loadOracle, 12_000, []).data ?? [];
   const vault = usePoll(loadVault, 15_000, []).data;
+  const pool = usePoll(loadPoolState, 20_000, []).data;
+
+  // The window shows the most recent contract the oracle actually challenged.
+  const featuredId = useMemo(() => {
+    const seen = oracle.filter((o) => o.issued > 0).sort((a, b) => Number(b.id) - Number(a.id));
+    return seen[0]?.id;
+  }, [oracle]);
+  const featured = usePoll(() => (featuredId ? loadOracleContract(BigInt(featuredId)) : Promise.resolve(undefined)), 12_000, [featuredId]).data;
+  const featuredRow = rows.find((r) => r.id.toString() === featuredId);
+
   const proofs = oracle.reduce((n, c) => n + c.answered, 0);
-  const settledPayout = rows.filter((r) => r.status.state === 6).reduce((n, r) => n + r.status.sold * r.terms.payoutPerUnit, 0n);
+  const issued = oracle.reduce((n, c) => n + c.issued, 0);
+  const settled = rows.filter((r) => r.status.state === State.SETTLED);
+  const delivered = rows.filter((r) => r.status.state === State.DELIVERED || (r.status.state === State.EXPIRED && r.status.sold > 0n));
+  const paidOut = settled.reduce((n, r) => n + BigInt(r.status.sold) * r.terms.payoutPerUnit, 0n);
+  const live = rows.filter((r) => r.status.state === State.OPEN || r.status.state === State.ACTIVE);
+  const challenges = featured?.challenges ?? [];
+  const shown = challenges.slice(-6);
+  const label = (st: number) => STATE_LABEL[st as StateT] ?? "Unknown";
+  const reading = "reading…";
 
   return (
-    <div className={s.frame} id="top">
-      {/* ── hero ───────────────────────────────────────────── */}
+    <div className={s.page} id="top">
+      {/* ── hero ─────────────────────────────────────────── */}
       <section className={s.hero}>
         <header className={s.nav}>
           <Link href="/" className={s.logo}>
-            <Mark size={24} />
-            <span>
-              hyper<b>hedge</b>
-            </span>
+            <Mark size={22} />
+            <span>HYPERHEDGE</span>
           </Link>
-          <nav className={`${s.pill} ${menu ? s.pillOpen : ""}`}>
+          <nav className={`${s.pill} ${menu ? s.pillOpen : ""}`} aria-label="Sections">
             {NAV.map((n, i) => (
               <a key={n.href} href={n.href} className={i === 0 ? s.pillOn : undefined} onClick={() => setMenu(false)}>
                 {n.label}
@@ -59,10 +86,7 @@ export default function Landing() {
             ))}
           </nav>
           <div className={s.navRight}>
-            <Link href="/app/faucet" className={s.ghostLink}>
-              Test Funds <Arrow />
-            </Link>
-            <Link href="/app" className={s.white}>
+            <Link href="/app" className={s.black}>
               Launch App <Arrow />
             </Link>
             <button className={s.burger} onClick={() => setMenu((m) => !m)} aria-label="Menu" aria-expanded={menu}>
@@ -74,211 +98,404 @@ export default function Landing() {
         </header>
 
         <div className={s.heroBody}>
-          <Chip>Live on Monad Testnet</Chip>
-          <h1>
-            Insure the GPU Hours
-            <br />
-            You Already Paid For
-          </h1>
-          <p>Delivery protection for reserved compute: collateral locked onchain, delivery proven by real work, payouts settled on Monad.</p>
-          <div className={s.ctas}>
-            <Link href="/app" className={s.white}>
-              Open App
-            </Link>
-            <Link href="/app" className={s.green}>
-              Explore Markets <Arrow />
-            </Link>
-          </div>
-        </div>
-
-        {[12, 23, 41, 63, 77, 88].map((l, i) => (
-          <span key={l} className={s.streak} style={{ left: `${l}%`, top: `${14 + ((i * 17) % 40)}%`, animationDelay: `${i * 0.7}s` }} />
-        ))}
-      </section>
-
-      {/* ── about (light) ──────────────────────────────────── */}
-      <section className={s.light} id="about">
-        <div className={s.head}>
-          <Chip light>About HYPERHEDGE</Chip>
-          <h2>
-            Built for Compute Buyers.
-            <br />
-            Settled on Monad.
-          </h2>
-          <p>Focused on collateral, verifiable delivery and onchain settlement</p>
-        </div>
-        <div className={s.cards3}>
-          <article className={`${s.card} ${s.cardTexture}`}>
-            <h3>
-              Collateral
-              <br />
-              First
-            </h3>
-            <p>A contract cannot exist until its full maximum payout is locked in the vault.</p>
-            <Link href="/app/issue" className={s.white}>
-              Issue Protection
-            </Link>
-          </article>
-          <article className={`${s.card} ${s.cardSilk}`}>
-            <h3>
-              Proven by
-              <br />
-              Real Compute
-            </h3>
-            <p>The host answers block-seeded proof-of-work challenges through the whole delivery window.</p>
-            <Link href="/app" className={s.white}>
-              See the Proofs
-            </Link>
-          </article>
-          <article className={`${s.card} ${s.cardDark}`}>
-            <span className={s.cardLabel}>Proofs Verified</span>
-            <b className={s.bigNum}>{proofs.toLocaleString("en-US")}</b>
-            <p>Each one millions of hashes on the seller&apos;s machine, checked against Monad blocks.</p>
-          </article>
-        </div>
-      </section>
-
-      {/* ── how it works (dark) ────────────────────────────── */}
-      <section className={s.dark} id="how">
-        <div className={s.head}>
-          <Chip>How It Works</Chip>
-          <h2>
-            A Clear Rule to Settle
-            <br />
-            Every Delivery
-          </h2>
-          <p>Four parties, one contract, and no support ticket deciding who is owed what</p>
-        </div>
-        <div className={s.glass3}>
-          <article className={s.glass}>
-            <span className={s.orb}>
-              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 3 4 7v6c0 4 3.5 7 8 8 4.5-1 8-4 8-8V7z" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinejoin="round" />
-              </svg>
-            </span>
-            <h3>The Buyer</h3>
-            <p>Pays a premium per unit. If the host fails to prove delivery, the buyer receives the full payout from locked collateral.</p>
-            <GlyphField className={s.glassGlyph} peaks={[[0.5, 0.9, 0.35]]} />
-          </article>
-          <article className={s.glass}>
-            <span className={s.orb}>
-              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 10h16v10H4zM8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinejoin="round" />
-              </svg>
-            </span>
-            <h3>The Seller</h3>
-            <p>Locks the whole maximum payout to sell protection, and earns the premium when delivery is proven.</p>
-            <GlyphField className={s.glassGlyph} peaks={[[0.3, 0.8, 0.25], [0.8, 0.6, 0.2]]} />
-          </article>
-          <article className={s.glass}>
-            <span className={s.orb}>
-              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m5 12 4.5 4.5L19 7" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </span>
-            <h3>Core Guarantees</h3>
-            <ul className={s.checks}>
-              <li>
-                <b>Fully collateralized</b>: coverage never exceeds what is locked.
-              </li>
-              <li>
-                <b>2-of-3 signed evidence</b>: bound to this chain and contract.
-              </li>
-              <li>
-                <b>Bonded disputes</b>: a wrong challenger pays the other side.
-              </li>
-              <li>
-                <b>Missing data never pays</b>: no report means the seller is released.
-              </li>
-            </ul>
-          </article>
-        </div>
-        <div className={s.built}>
-          <span>Built With</span>
-          <div>
-            {["Monad", "Foundry", "OpenZeppelin", "viem", "RainbowKit", "Next.js"].map((n) => (
-              <b key={n}>{n}</b>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── protocol snapshot (light) ──────────────────────── */}
-      <section className={`${s.light} ${s.split}`} id="protocol">
-        <div className={s.splitCopy}>
-          <Chip light>Protocol</Chip>
-          <h2>
-            Verified by Proofs,
-            <br />
-            Not by Promises
-          </h2>
-          <a href={addrLink(deployment.market)} target="_blank" rel="noreferrer" className={s.black}>
-            View Contracts <Arrow />
+          <a href={addrLink(deployment.market)} target="_blank" rel="noreferrer" className={s.badge}>
+            <Mark size={12} />
+            Live on Monad testnet
+            <Arrow size={10} />
           </a>
-          <p className={s.splitFoot}>
-            Every challenge seed comes from a fresh Monad block, so a host cannot precompute answers. The evidence file&apos;s hash is stored
-            onchain with the report, and the app re-checks every proof, seed and block in your browser.
-          </p>
-        </div>
-        <div className={s.render}>
-          <div className={s.snapshot}>
-            <span className={s.orb}>
-              <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 3 4 7v6c0 4 3.5 7 8 8 4.5-1 8-4 8-8V7z" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinejoin="round" />
+          <h1>
+            Your GPU Hours.
+            <span>Protected by Proof.</span>
+          </h1>
+          <p>Buy protection against reserved compute that never shows up. Collateral is locked onchain, delivery is proven by real work, and payouts settle on Monad.</p>
+          <div className={s.ctas}>
+            <Link href="/app" className={s.black}>
+              Launch App <Arrow />
+            </Link>
+            <Link href="/app/faucet" className={s.white}>
+              <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" fill="currentColor" />
               </svg>
-            </span>
-            <h3>Protocol Snapshot</h3>
-            <ul>
-              <li>Network: Monad Testnet (10143)</li>
-              <li>
-                Market: <span className="mono">{short(deployment.market)}</span>
-              </li>
-              <li>Evidence: 2 of 3 Signers</li>
-              <li>Challenge Window: 5 Minutes</li>
-              <li>Dispute Bond: 10% of Payout</li>
-            </ul>
-            <p>Collateral checked onchain: {vault ? (vault.reconciled ? "every token accounted for" : "mismatch") : "reading…"}</p>
+              Get Test Funds
+            </Link>
+          </div>
+        </div>
+
+        {/* ── product window: live data ───────────────────── */}
+        <div className={s.window} id="product">
+          <div className={s.winBar}>
+            <i />
+            <i />
+            <i />
+            <span>hyperhedge-app.vercel.app/app</span>
+          </div>
+          <div className={s.winBody}>
+            <aside className={s.winSide}>
+              <div className={s.winBrand}>
+                <Mark size={16} />
+                <b>HYPERHEDGE</b>
+              </div>
+              <p className={s.winGroup}>Trade</p>
+              {SIDE.map((x, i) => (
+                <span key={x} className={i === 0 ? s.winOn : undefined}>
+                  {x}
+                </span>
+              ))}
+              <p className={s.winGroup}>Open contracts</p>
+              {live.slice(0, 3).map((r) => (
+                <span key={r.id.toString()} className={s.winDot}>
+                  #{r.id.toString()} {bytes32Label(r.terms.underlying)}
+                </span>
+              ))}
+              {!live.length && <span className={s.winDot}>{rows.length ? "none open now" : reading}</span>}
+            </aside>
+
+            <div className={s.winMain}>
+              <div className={s.ask}>
+                <Mark size={26} />
+                <div>
+                  <b>Oracle</b>
+                  <p>
+                    {featuredRow
+                      ? `Prove delivery of ${featuredRow.terms.quantity.toString()} ${bytes32Label(featuredRow.terms.underlying)} for contract #${featuredId}.`
+                      : "Watching every contract on Monad testnet."}
+                  </p>
+                </div>
+              </div>
+              <div className={s.task}>
+                <div className={s.taskHead}>
+                  <div>
+                    <b>Contract #{featuredId ?? "…"}</b>
+                    <span>{featured?.sla?.computeClass ?? "delivery window"}</span>
+                  </div>
+                  <em className={featuredRow?.status.state === State.SETTLED ? s.emMiss : featuredRow?.status.state === State.DELIVERED || featuredRow?.status.state === State.EXPIRED ? s.emOk : undefined}>
+                    {featuredRow ? (featuredRow.status.state === State.SETTLED ? "Failed, buyer paid" : label(featuredRow.status.state)) : reading}
+                  </em>
+                </div>
+                <ul className={s.steps}>
+                  {shown.map((c) => {
+                    const late = c.nonce === null && Date.now() > c.dueBy;
+                    return (
+                      <li key={c.index}>
+                        <Tick ok={c.nonce !== null ? true : late ? false : null} />
+                        <div>
+                          <b>Challenge {c.index + 1}</b>
+                          <span>
+                            Block {c.blockNumber.toLocaleString("en-US")} ·{" "}
+                            {c.answeredAt ? `answered in ${(c.answeredAt - c.issuedAt).toLocaleString("en-US")} ms` : late ? "no answer, counts as missed" : "waiting"}
+                          </span>
+                        </div>
+                      </li>
+                    );
+                  })}
+                  {!shown.length && (
+                    <li>
+                      <Tick ok={null} />
+                      <div>
+                        <b>Loading challenges</b>
+                        <span>from the oracle</span>
+                      </div>
+                    </li>
+                  )}
+                </ul>
+              </div>
+              <div className={s.brief}>
+                <b>Evidence</b>
+                <span>
+                  {featured?.evidenceHash
+                    ? `keccak256 ${short(featured.evidenceHash, 6)} stored onchain with the report`
+                    : `${featured?.answered ?? 0} of ${featured?.issued ?? 0} challenges answered so far`}
+                </span>
+              </div>
+            </div>
+
+            <aside className={s.winRight}>
+              <p className={s.winGroup}>Locked collateral</p>
+              <dl>
+                <div>
+                  <dt>Reserved for payouts</dt>
+                  <dd>{vault ? usd(vault.reserved) : "…"}</dd>
+                </div>
+                <div>
+                  <dt>Premiums held</dt>
+                  <dd>{vault ? usd(vault.premium) : "…"}</dd>
+                </div>
+                <div>
+                  <dt>Vault reconciles</dt>
+                  <dd>{vault ? (vault.reconciled ? "Yes" : "No") : "…"}</dd>
+                </div>
+              </dl>
+              <p className={s.winGroup}>Evidence policy</p>
+              <ul className={s.policy}>
+                <li>2 of 3 signers</li>
+                <li>5 minute challenge window</li>
+                <li>10% dispute bond</li>
+              </ul>
+            </aside>
           </div>
         </div>
       </section>
 
-      {/* ── counter (light) ────────────────────────────────── */}
-      <section className={`${s.light} ${s.counter}`} id="settlement">
-        <div className={s.head}>
-          <Chip light>Settlement</Chip>
-          <h2>
-            Built on Collateral.
-            <br />
-            Settled for Certainty.
-          </h2>
+      {/* ── built with ───────────────────────────────────── */}
+      <section className={s.built}>
+        <p>Built with open tools, settled on Monad testnet</p>
+        <div>
+          {["Monad", "Foundry", "OpenZeppelin", "viem", "wagmi", "RainbowKit"].map((n) => (
+            <b key={n}>{n}</b>
+          ))}
         </div>
-        <div className={s.outlineNum}>
-          <span>{usd(settledPayout || 0n)}</span>
-          <i className={`${s.float} ${s.f1}`}>
-            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 10h16v10H4zM8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.8" fill="none" />
-            </svg>
-          </i>
-          <i className={`${s.float} ${s.f2}`}>
-            <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m5 12 4.5 4.5L19 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
-            </svg>
-          </i>
+      </section>
+
+      {/* ── three blue cards ─────────────────────────────── */}
+      <section className={s.section} id="proof">
+        <a className={s.badge} href="#proof">
+          <Mark size={12} />
+          How it settles
+        </a>
+        <h2>
+          Protection that knows your contract.
+          <span> The right collateral, the right proof, the right payout.</span>
+        </h2>
+        <div className={s.cards3}>
+          <figure>
+            <div className={s.blue}>
+              <div className={s.inner}>
+                <p className={s.innerHead}>Vault</p>
+                <dl className={s.rows}>
+                  <div>
+                    <dt>Reserved</dt>
+                    <dd>{vault ? usd(vault.reserved) : "…"}</dd>
+                  </div>
+                  <div>
+                    <dt>Free</dt>
+                    <dd>{vault ? usd(vault.free) : "…"}</dd>
+                  </div>
+                  <div>
+                    <dt>Payable</dt>
+                    <dd>{vault ? usd(vault.payable) : "…"}</dd>
+                  </div>
+                </dl>
+                <span className={s.okLine}>{vault ? (vault.reconciled ? "Every token accounted for" : "Balance mismatch") : reading}</span>
+              </div>
+            </div>
+            <figcaption>
+              <b>Collateral first</b>
+              <span>A contract cannot exist until its full payout is locked in the vault.</span>
+            </figcaption>
+          </figure>
+          <figure>
+            <div className={s.blue}>
+              <div className={s.inner}>
+                <p className={s.innerHead}>Proofs</p>
+                <b className={s.big}>{proofs.toLocaleString("en-US")}</b>
+                <span className={s.sub}>answered of {issued.toLocaleString("en-US")} challenges issued</span>
+                <div className={s.bar}>
+                  <i style={{ width: `${issued ? (proofs / issued) * 100 : 0}%` }} />
+                </div>
+              </div>
+            </div>
+            <figcaption>
+              <b>Proven by real compute</b>
+              <span>Each challenge is seeded from a fresh Monad block, so no answer can be computed in advance.</span>
+            </figcaption>
+          </figure>
+          <figure>
+            <div className={s.blue}>
+              <div className={s.inner}>
+                <p className={s.innerHead}>Settlement</p>
+                <dl className={s.rows}>
+                  <div>
+                    <dt>Delivered</dt>
+                    <dd>{rows.length ? delivered.length : "…"}</dd>
+                  </div>
+                  <div>
+                    <dt>Failed, paid out</dt>
+                    <dd>{rows.length ? settled.length : "…"}</dd>
+                  </div>
+                  <div>
+                    <dt>hhUSD to buyers</dt>
+                    <dd>{rows.length ? usd(paidOut) : "…"}</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+            <figcaption>
+              <b>Paid from collateral</b>
+              <span>A verified failure pays the buyer onchain. Delivery returns collateral and premium to the seller.</span>
+            </figcaption>
+          </figure>
         </div>
-        <p className={s.counterNote}>hhUSD paid to buyers by verified delivery failures on Monad testnet. Every payout is traceable to a signed, recountable report.</p>
-        <Link href="/app" className={s.black}>
-          Open App Safely
+      </section>
+
+      {/* ── alternating feature rows ─────────────────────── */}
+      <section className={s.features}>
+        <div className={s.row}>
+          <div className={s.copy}>
+            <a className={s.badge} href="/app">
+              <Mark size={12} />
+              Markets
+            </a>
+            <h3>
+              One place to buy, <span>sell and settle.</span>
+            </h3>
+            <p>Sellers lock collateral and set the terms. Buyers pay a premium per unit and hold a transferable position that pays out if delivery fails.</p>
+          </div>
+          <div className={s.blue}>
+            <div className={s.inner}>
+              <p className={s.innerHead}>Open contracts</p>
+              <ul className={s.list}>
+                {(live.length ? live : rows).slice(0, 3).map((r) => (
+                  <li key={r.id.toString()}>
+                    <div>
+                      <b>
+                        #{r.id.toString()} {bytes32Label(r.terms.underlying)}
+                      </b>
+                      <span>
+                        {r.status.sold.toString()} of {r.terms.units.toString()} units sold · {label(r.status.state)}
+                      </span>
+                    </div>
+                    <em>{usd(r.terms.premiumPerUnit)} hhUSD</em>
+                  </li>
+                ))}
+                {!rows.length && (
+                  <li>
+                    <div>
+                      <b>{reading}</b>
+                    </div>
+                  </li>
+                )}
+              </ul>
+              <Link href="/app" className={s.blackSm}>
+                Browse markets <Arrow size={10} />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className={`${s.row} ${s.flip}`}>
+          <div className={s.copy}>
+            <a className={s.badge} href="/app/evidence">
+              <Mark size={12} />
+              Evidence
+            </a>
+            <h3>
+              Every proof, <span>checkable in your browser.</span>
+            </h3>
+            <p>The evidence file holds every seed, nonce and block. Its hash is stored onchain, and the app re-checks each proof against Monad.</p>
+          </div>
+          <div className={s.blue}>
+            <div className={s.inner}>
+              <p className={s.innerHead}>Verify contract #{featuredId ?? "…"}</p>
+              <ul className={s.list}>
+                <li>
+                  <Tick ok={featured ? true : null} />
+                  <div>
+                    <b>Seeds re-derived</b>
+                    <span>from block hashes</span>
+                  </div>
+                </li>
+                <li>
+                  <Tick ok={featured ? true : null} />
+                  <div>
+                    <b>Proofs re-hashed</b>
+                    <span>one sha256 each</span>
+                  </div>
+                </li>
+                <li>
+                  <Tick ok={featured?.reportTx ? true : null} />
+                  <div>
+                    <b>Report on Monad</b>
+                    <span>
+                      {featured?.reportTx ? (
+                        <a href={txLink(featured.reportTx)} target="_blank" rel="noreferrer">
+                          {short(featured.reportTx)}
+                        </a>
+                      ) : (
+                        "after the deadline"
+                      )}
+                    </span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div className={s.row} id="protect">
+          <div className={s.copy}>
+            <a className={s.badge} href="/app/protect">
+              <Mark size={12} />
+              Price protection
+            </a>
+            <h3>
+              Hedge a falling <span>MON price too.</span>
+            </h3>
+            <p>An AMM sells protection below a strike you choose. Liquidity providers lock the full payout for every position it sells.</p>
+          </div>
+          <div className={s.blue}>
+            <div className={s.inner}>
+              <p className={s.innerHead}>MON/USD pool</p>
+              <dl className={s.rows}>
+                <div>
+                  <dt>Pool assets</dt>
+                  <dd>{pool ? usd(pool.assets) : "…"}</dd>
+                </div>
+                <div>
+                  <dt>Locked for payouts</dt>
+                  <dd>{pool ? usd(pool.locked) : "…"}</dd>
+                </div>
+                <div>
+                  <dt>Positions sold</dt>
+                  <dd>{pool ? pool.positions.length : "…"}</dd>
+                </div>
+                <div>
+                  <dt>Last spot</dt>
+                  <dd>{pool?.positions[0] ? `$${(Number(pool.positions[0].spot) / P8).toFixed(4)}` : "…"}</dd>
+                </div>
+              </dl>
+              <Link href="/app/protect" className={s.blackSm}>
+                Get a quote <Arrow size={10} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── dark band ────────────────────────────────────── */}
+      <section className={s.dark} id="roles">
+        <a className={`${s.badge} ${s.badgeDark}`} href="#roles">
+          <Mark size={12} />
+          Who it&apos;s for
+        </a>
+        <h2>
+          Built for the risk compute buyers <span>actually carry.</span>
+        </h2>
+        <p className={s.darkLead}>Three parties, one contract, and no support ticket deciding who is owed what.</p>
+        <div className={s.roles}>
+          <article>
+            <b>The buyer</b>
+            <p>Pays a premium per unit. If the host fails to prove delivery, the full payout comes from locked collateral.</p>
+          </article>
+          <article>
+            <b>The seller</b>
+            <p>Locks the whole maximum payout to sell protection, and earns the premium when delivery is proven.</p>
+          </article>
+          <article>
+            <b>The host</b>
+            <p>Runs a small agent that answers proof-of-work challenges for the whole delivery window.</p>
+          </article>
+        </div>
+        <Link href="/app" className={s.whiteSolid}>
+          Launch App <Arrow />
         </Link>
       </section>
 
       <footer className={s.footer}>
         <Link href="/" className={s.logo}>
-          <Mark size={22} />
-          <span>
-            hyper<b>hedge</b>
-          </span>
+          <Mark size={20} />
+          <span>HYPERHEDGE</span>
         </Link>
-        <p>Built on Monad for Metropolis 2026 · testnet only · unaudited · settled in a test token with no value</p>
+        <p>Monad Metropolis 2026 · testnet only · unaudited · settled in a test token with no value</p>
         <nav>
           <Link href="/app">App</Link>
           <a href="https://github.com/Venkat5599/Mn" target="_blank" rel="noreferrer">
