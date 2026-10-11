@@ -17,7 +17,7 @@
   gap: 12px;
   width: 100%;
   border: 1px solid transparent;
-  font-family: var(--font-pally), var(--font-switzer), system-ui, sans-serif;
+  font-family: var(--font-supreme), system-ui, sans-serif;
   transition:
     background-color 300ms ease,
     border-color 300ms ease;
