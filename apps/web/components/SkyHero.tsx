@@ -25,8 +25,12 @@ export function SkyHero() {
         </p>
 
         <div className={s.actions}>
-          <LinkButton href="/app">Launch App</LinkButton>
-          <LinkButton href="/app/faucet">Get test funds</LinkButton>
+          <div className={s.row}>
+            <LinkButton href="/app">Launch App</LinkButton>
+            <LinkButton href="/app/faucet" tone="secondary">
+              Get test funds
+            </LinkButton>
+          </div>
           <span className={s.small}>Monad testnet · hhUSD</span>
           <span className={s.note}>Free to try. Connect a wallet when you buy.</span>
         </div>

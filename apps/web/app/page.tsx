@@ -479,7 +479,7 @@ export default function Landing() {
             </Settle>
           ))}
         </div>
-        <LinkButton href="/app">
+        <LinkButton href="/app" tone="secondary">
           Launch App
         </LinkButton>
       </section>

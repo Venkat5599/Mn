@@ -1,4 +1,4 @@
-/* Ported from Scrappy's MorphNav, in the scrappypet tones (graphite bar, white action, system blue for the current section). */
+/* Ported from Scrappy's MorphNav, in white: navy ink, a tonal blue for the current section, a navy action. */
 .wrap {
   position: fixed;
   inset: 0 0 auto;
@@ -27,24 +27,26 @@
   height: 64px;
   max-width: 1180px;
   padding: 0 10px 0 20px;
-  background: #1d1d1f;
+  background: #fff;
+  border-color: rgba(11, 21, 38, 0.08);
+  box-shadow: 0 1px 2px rgba(11, 21, 38, 0.04);
 }
 
 .small {
   height: 56px;
   max-width: 480px;
   padding: 0 8px 0 14px;
-  border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(29, 29, 31, 0.9);
+  border-color: rgba(11, 21, 38, 0.1);
+  background: rgba(255, 255, 255, 0.92);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
   backdrop-filter: blur(16px) saturate(1.4);
 }
 
 .brand {
   flex: none;
-  color: #f5f5f7;
-  --ink: #f5f5f7;
-  --cyan: #5aa9ff;
+  color: #0b1526;
+  --ink: #0b1526;
+  --cyan: #2468d4;
   text-decoration: none;
 }
 
@@ -79,7 +81,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #d1d1d6;
+  color: #46516a;
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
@@ -98,25 +100,25 @@
 }
 
 .link:hover {
-  color: #f5f5f7;
+  color: #0b1526;
 }
 
 .link.on {
-  color: #fff;
+  color: #1a54b0;
   font-weight: 700;
 }
 
 .link:focus-visible,
 .cta:focus-visible,
 .brand:focus-visible {
-  outline: 2px solid #5aa9ff;
+  outline: 2px solid #2468d4;
   outline-offset: 2px;
 }
 
 .lit {
   position: absolute;
   inset: 0;
-  background: #007aff;
+  background: rgba(36, 104, 212, 0.1);
 }
 
 .linkIn {
@@ -131,18 +133,18 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: #fff;
-  color: #1d1d1f;
+  background: #0b1526;
+  color: #fff;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 500;
   text-decoration: none;
   transition: background-color 160ms ease;
 }
 
 .full .cta {
   height: 44px;
-  padding: 0 20px;
-  border-radius: 14px;
+  padding: 0 18px;
+  border-radius: 10px;
 }
 
 .small .cta {
@@ -152,7 +154,7 @@
 }
 
 .cta:hover {
-  background: #e8e8ed;
+  background: #1d2a40;
 }
 
 .ctaIcon {

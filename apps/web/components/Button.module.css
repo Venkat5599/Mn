@@ -1,88 +1,70 @@
-/* Ported from the scrappypet landing's gloss button (github.com/Venkat5599/Gameboy). */
+/* Enterprise action: flat fill, 10px radius, no gloss, no glow, no lift. Hover shifts tone; the arrow travels. */
 .btn {
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 0 32px;
-  overflow: hidden;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 20px;
   border: 0;
-  border-radius: 999px;
-  color: #fff;
-  font: 600 16px/1 var(--font-supreme), system-ui, sans-serif;
+  border-radius: 10px;
+  font: 500 15px/1 var(--font-supreme), system-ui, sans-serif;
+  letter-spacing: -0.005em;
   white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
-  user-select: none;
-  box-shadow: 0 8px 18px -10px rgba(0, 122, 255, 0.6);
-  transition: transform 120ms ease;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
 }
 
-.btn:active {
-  transform: translateY(1px);
+.primary {
+  background: #0b1526;
+  color: #fff;
+}
+
+.primary:hover {
+  background: #1d2a40;
+}
+
+.primary:active {
+  background: #050b16;
+}
+
+.secondary {
+  background: #fff;
+  color: #0b1526;
+  box-shadow: inset 0 0 0 1px rgba(11, 21, 38, 0.1);
+}
+
+.secondary:hover {
+  background: #f1f4f8;
+}
+
+.secondary:active {
+  background: #e6ebf2;
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .btn:focus-visible {
-  outline: 2px solid #007aff;
+  outline: 2px solid #2468d4;
   outline-offset: 3px;
-}
-
-.surface {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(115deg, #5aa9ff 0%, #007aff 30%, #3d9bff 52%, #0a6de6 72%, #5aa9ff 100%) 0 0 / 220% 220%;
-  animation: gloss-drift 6s ease-in-out infinite;
-}
-
-.shine {
-  position: absolute;
-  top: 4px;
-  left: 12px;
-  right: 12px;
-  height: 50%;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.3);
-  filter: blur(3px);
-  pointer-events: none;
-}
-
-.label {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .arrow {
   flex: none;
-  transition: transform 200ms cubic-bezier(0.3, 0.7, 0.4, 1);
+  transition: transform 180ms cubic-bezier(0.3, 0.7, 0.4, 1);
 }
 
 .btn:hover .arrow {
-  transform: translateX(2px);
-}
-
-@keyframes gloss-drift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+  transform: translate(1.5px, -1.5px);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .surface {
-    animation: none;
-  }
   .arrow {
     transition: none;
   }
