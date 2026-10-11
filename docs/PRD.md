@@ -130,34 +130,36 @@ Record only after the demo works from a fresh wallet on a clean deployment. Keep
 ## 9. Definition of done (release gate)
 
 **Financial invariants**
-- [ ] Seller collateral always covers the outstanding maximum payout
-- [ ] No position can be paid twice
-- [ ] Premiums and collateral are accounted for separately
-- [ ] No withdrawal can bypass an active obligation
+- [x] Seller collateral always covers the outstanding maximum payout
+- [x] No position can be paid twice
+- [x] Premiums and collateral are accounted for separately
+- [x] No withdrawal can bypass an active obligation
 
 **Oracle security**
-- [ ] Unauthorized signatures are rejected
-- [ ] Duplicate and stale reports are rejected
-- [ ] Reports are bound to the correct contract and chain
-- [ ] Claim and dispute deadlines are enforced
+- [x] Unauthorized signatures are rejected
+- [x] Duplicate and stale reports are rejected
+- [x] Reports are bound to the correct contract and chain
+- [x] Claim and dispute deadlines are enforced
 
 **Trading integrity**
-- [ ] A buyer cannot buy more protection than is available
-- [ ] Position ownership and claim rights stay consistent
-- [ ] Invalid and replayed orders are rejected
-- [ ] Token transfer failures revert safely
+- [x] A buyer cannot buy more protection than is available
+- [x] Position ownership and claim rights stay consistent
+- [x] Invalid and replayed orders are rejected
+- [x] Token transfer failures revert safely
 
 **End-to-end proof**
-- [ ] A clean deployment creates and funds a contract
-- [ ] A buyer purchases protection from a fresh wallet
-- [ ] A simulated failure produces a real testnet payout transaction
-- [ ] A delivered scenario releases funds only after valid expiry
+- [x] A clean deployment creates and funds a contract
+- [x] A buyer purchases protection from a fresh wallet
+- [x] A simulated failure produces a real testnet payout transaction
+- [x] A delivered scenario releases funds only after valid expiry
 
 **Submission quality**
-- [ ] Live product URL works, with clear access instructions
-- [ ] Public GitHub repo is accessible to metropolis@hackathon.monad.xyz
+- [x] Live product URL works, with clear access instructions
+- [x] Public GitHub repo is accessible to metropolis@hackathon.monad.xyz
 - [ ] Demo uses a fresh wallet and visible transaction hashes
 - [ ] Technical demo (≤ 3 min) and pitch video (≤ 2 min) are within limits
+
+Evidence for every box: `docs/RELEASE_GATE.md`.
 
 This gate does not replace an independent security review. Fuzz, invariant and malicious-token/oracle tests come before any real-money deployment.
 

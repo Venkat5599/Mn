@@ -6,13 +6,16 @@ import { loadContracts, loadOracle, usePoll } from "@/lib/data";
 import { short, usd } from "@/lib/format";
 import s from "../pages.module.css";
 
+// The demo host is plain HTTP, so the browser reaches it through a same-origin proxy. Other hosts named in an
+// SLA are not probed from the viewer's browser at all; their record comes from the oracle's proofs.
+const PROXIED: Record<string, string> = { "http://187.127.137.136:9795": "/api/agent/health" };
+
 async function health(host: string) {
+  const path = PROXIED[host.replace(/\/$/, "")];
+  if (!path) return null;
   const t = Date.now();
   try {
-    const r = await fetch(`/api/oracle/contracts`, { cache: "no-store" }); // keep a same-origin request for timing parity
-    void r;
-    const h = await fetch(`${host.replace(/\/$/, "")}/health`, { cache: "no-store", signal: AbortSignal.timeout(4_000) });
-    const j = (await h.json()) as { ok?: boolean; cores?: number };
+    const j = (await (await fetch(path, { cache: "no-store", signal: AbortSignal.timeout(6_000) })).json()) as { ok?: boolean; cores?: number };
     return { ok: Boolean(j.ok), ms: Date.now() - t, cores: j.cores };
   } catch {
     return { ok: false, ms: Date.now() - t, cores: undefined };
@@ -83,7 +86,17 @@ export default function Providers() {
                     <td className="num">
                       {x.proofs} of {x.issued}
                     </td>
-                    <td>{l ? l.ok ? <span className={s.ok}>answering · {l.cores} cores</span> : <span className={s.warn}>not reachable from your browser</span> : "…"}</td>
+                    <td>
+                      {l === undefined ? (
+                        "…"
+                      ) : l === null ? (
+                        <span className={s.mute}>no public endpoint</span>
+                      ) : l.ok ? (
+                        <span className={s.ok}>answering · {l.cores} cores · {l.ms} ms</span>
+                      ) : (
+                        <span className={s.bad}>not answering</span>
+                      )}
+                    </td>
                   </tr>
                 );
               })}
@@ -91,8 +104,7 @@ export default function Providers() {
           </table>
         </div>
         <p className={s.mute}>
-          The demo host serves plain HTTP, which an HTTPS page cannot call directly, so &quot;not reachable&quot; here does not mean it is down.
-          The oracle&apos;s proof record above is the authoritative signal.
+          Live status is checked through this site for the demo host. The oracle&apos;s proof record is the authoritative signal for every host.
         </p>
       </section>
 

@@ -3,6 +3,7 @@
 import { State } from "@hyperhedge/sdk";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { loadContracts, usePoll } from "@/lib/data";
 import { Mark } from "./Mark";
 import s from "./Sidebar.module.css";
@@ -90,14 +91,22 @@ export function Sidebar() {
 
   const isOn = (href: string) => (href === "/app" ? path === "/app" || path.startsWith("/app/c/") : path === href);
 
+  // Phones get a compact bar; the grouped list opens under it and closes on navigation.
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => setMenuOpen(false), [path]);
+
   return (
-    <aside className={s.side}>
+    <aside className={s.side} data-open={menuOpen || undefined}>
       <div className={s.brandRow}>
         <Link href="/" className={s.brand} aria-label="HYPERHEDGE home">
           <Mark size={26} />
           <span>HYPERHEDGE</span>
         </Link>
+        <button type="button" className={s.menu} aria-expanded={menuOpen} aria-controls="app-nav" onClick={() => setMenuOpen((o) => !o)}>
+          {menuOpen ? "Close" : "Menu"}
+        </button>
       </div>
+      <div id="app-nav" className={s.groups}>
       {groups.map((g) => (
         <div key={g.title} className={s.groupBlock}>
           <p className={s.group}>{g.title}</p>
@@ -118,6 +127,7 @@ export function Sidebar() {
           </nav>
         </div>
       ))}
+      </div>
       <p className={s.foot}>Monad testnet · unaudited · test token</p>
     </aside>
   );

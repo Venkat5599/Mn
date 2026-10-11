@@ -1,0 +1,47 @@
+HYPERHEDGE dispute run on Monad testnet · market 0x9dc5f35B0866bB0a1F046712B38f11E2544D701E
+seller and guardian 0x581a36dcCb8F0631d06FD9CCa6b03c4705cEDDD9
+fresh buyers 0xb15457b7F53F0DD82c8417FEd14b5a94812fA36d, 0x25Bfc56832C9f63658079F0314948b2F880C40df, 0x0Dc6Fd6dd3355475F47f7BBf4b0Ea473FE5ce4b1
+
+seller setup
+  hhUSD faucet (seller)          https://testnet.monadexplorer.com/tx/0xf9ed2edc8d8743ad78e71fe9289d407421f4a32ab20971981e1a48f16e51f243
+  approve vault (seller)         https://testnet.monadexplorer.com/tx/0xfef3603903092ae21f2a1c02551607b37a3ab23ddb61a727edc92f5d12b1d606
+  deposit collateral             https://testnet.monadexplorer.com/tx/0xdf5f0cade6e7a6036bb86d52ccc5a88b519da77523f6f81bee98143eaf5db86b
+  create (3 units)               https://testnet.monadexplorer.com/tx/0xa3a85386ab42898240a3094bac6c8d57ccf8ce4684b1638f8acb00471d4a665d
+  contract 3: sale closes 2026-10-11T09:09:45.000Z
+
+fresh wallets buy
+  MON gas to 0xb15457            https://testnet.monadexplorer.com/tx/0x6ff01c651a173a9077f896f61d710bdf485c899afa37f884536a06ce8ca4e4cc
+  MON gas to 0x25Bfc5            https://testnet.monadexplorer.com/tx/0xb06608539aa15eb1e31be2db64a542ee2187fd8b560d6ba4ab1b048fe69a4c16
+  MON gas to 0x0Dc6Fd            https://testnet.monadexplorer.com/tx/0xb797a297ce7229fed53d98687cf0c4a68117feaff19d90e992011dfc9bbc2223
+  buyer 1 faucet                 https://testnet.monadexplorer.com/tx/0xbdcd00d385330f6ce3be2454baa3d2f3829517c03fdd3be3446e7178d6884c2e
+  buyer 3 faucet                 https://testnet.monadexplorer.com/tx/0xfec2635b0a52e7271dd43de0585636e4fddfd9e4f0fad1be9fbb7d3818df4434
+  buyer 2 faucet                 https://testnet.monadexplorer.com/tx/0xffe31549c6ea0c39b483508eb4813cccc227affbe6e657a1b41e50338fc9e0ea
+  buyer 1 approve                https://testnet.monadexplorer.com/tx/0xcc2080ba191585cf1b0e1072ac4260145c43813f77891cfcc117d65001c3d7ac
+  buyer 3 approve                https://testnet.monadexplorer.com/tx/0xeb84e61ef5f3d7a1a17ec438295efa3a64ca5ce483e3b73dcd2cf8af723e413d
+  buyer 2 approve                https://testnet.monadexplorer.com/tx/0x3e4613b409b4d773781e983e5c6a56718b93c1f0073b0aee7302d01cbfcc7d86
+  buyer 1 buy 1 unit             https://testnet.monadexplorer.com/tx/0x99df4e3d31ea62053e0dd588dae24be4b9a43db284a0ef445e46d61ffff11730
+  buyer 2 buy 1 unit             https://testnet.monadexplorer.com/tx/0x951b7f1c267a2a5c6cb801fe6e7c549a4dcff41dc77dc792e3a12a8c295ea9da
+  buyer 3 buy 1 unit             https://testnet.monadexplorer.com/tx/0xf8ecf7bd86264bd6e95270808b77692132db42ba511e07cf9f703440e6f6f0e7
+  buyer 1: faucet → confirmed purchase in 6.9 s
+  buyer 2: faucet → confirmed purchase in 7.5 s
+  buyer 3: faucet → confirmed purchase in 7.5 s
+
+oracle evaluates the window
+  contract 3: Active
+  contract 3: In review
+  report accepted: FAILURE · evidence 0xa6743914914b044e7637d29575835b803a49c18f70cd0ccf4f3690f6c05351fc
+
+seller disputes a valid failure
+  dispute (bond 30 hhUSD)        https://testnet.monadexplorer.com/tx/0x5bbb7b4a8a41aa6ad02e24abed119cf4b3f930ddc4d565dab011acdf77114dd0
+  guardian upholds FAILURE       https://testnet.monadexplorer.com/tx/0x6bf286b894431e831b7e48aa7e3dc919409403e3fb3a5f214838eac3d84a3404
+  contract 3: Settled · bond share per unit 10 hhUSD
+
+buyers claim
+  buyer 1 claim                  https://testnet.monadexplorer.com/tx/0x37992d819224a5ec016759e27e8b1adce2de79a51642f4bd3050b3f634404df0
+    received 110 hhUSD (payout 100 + bond share)
+  buyer 2 claim                  https://testnet.monadexplorer.com/tx/0x09421095674d76fae2f266e64d1321dd51a8ea83babb2bba2d0985cd00e92076
+    received 110 hhUSD (payout 100 + bond share)
+  buyer 3 claim                  https://testnet.monadexplorer.com/tx/0xe3e91cf7964420d0042579cb3ba56d950182ccc5770d98d01372f0b75c281bff
+    received 110 hhUSD (payout 100 + bond share)
+
+vault reconcile: OK (balance 30000000, tracked 30000000)

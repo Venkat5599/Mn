@@ -7,6 +7,7 @@
   "scripts": {
     "start": "bun src/index.ts",
     "demo": "bun scripts/run-demo.ts",
+    "dispute": "bun scripts/run-dispute.ts",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
