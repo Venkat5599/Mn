@@ -1,4 +1,4 @@
-/* Ported from Scrappy's MorphNav, in its own dark tones (green-black ground, pale blue where Scrappy used leaf). */
+/* Ported from Scrappy's MorphNav, in the scrappypet tones (graphite bar, white action, system blue for the current section). */
 .wrap {
   position: fixed;
   inset: 0 0 auto;
@@ -17,7 +17,7 @@
   gap: 12px;
   width: 100%;
   border: 1px solid transparent;
-  font-family: var(--font-supreme), system-ui, sans-serif;
+  font-family: var(--font-pally), var(--font-switzer), system-ui, sans-serif;
   transition:
     background-color 300ms ease,
     border-color 300ms ease;
@@ -27,24 +27,24 @@
   height: 64px;
   max-width: 1180px;
   padding: 0 10px 0 20px;
-  background: #151816;
+  background: #1d1d1f;
 }
 
 .small {
   height: 56px;
   max-width: 480px;
   padding: 0 8px 0 14px;
-  border-color: rgba(198, 219, 247, 0.1);
-  background: rgba(21, 24, 22, 0.9);
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(29, 29, 31, 0.9);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
   backdrop-filter: blur(16px) saturate(1.4);
 }
 
 .brand {
   flex: none;
-  color: #eef1ea;
-  --ink: #eef1ea;
-  --cyan: #c6dbf7;
+  color: #f5f5f7;
+  --ink: #f5f5f7;
+  --cyan: #5aa9ff;
   text-decoration: none;
 }
 
@@ -79,7 +79,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #b6bdb7;
+  color: #d1d1d6;
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
@@ -98,25 +98,25 @@
 }
 
 .link:hover {
-  color: #eef1ea;
+  color: #f5f5f7;
 }
 
 .link.on {
-  color: #0c0e0d;
+  color: #fff;
   font-weight: 700;
 }
 
 .link:focus-visible,
 .cta:focus-visible,
 .brand:focus-visible {
-  outline: 2px solid #c6dbf7;
+  outline: 2px solid #5aa9ff;
   outline-offset: 2px;
 }
 
 .lit {
   position: absolute;
   inset: 0;
-  background: #c6dbf7;
+  background: #007aff;
 }
 
 .linkIn {
@@ -131,8 +131,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: #c6dbf7;
-  color: #0c0e0d;
+  background: #fff;
+  color: #1d1d1f;
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
@@ -152,7 +152,7 @@
 }
 
 .cta:hover {
-  background: #dde9fa;
+  background: #e8e8ed;
 }
 
 .ctaIcon {

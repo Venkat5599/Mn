@@ -1,56 +1,63 @@
-/* Ported from the Scrappy button: solid fill, no glow, no lift. Hover shifts tone and the arrow travels up-right. */
+/* Ported from the scrappypet landing's gloss button (github.com/Venkat5599/Gameboy). */
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   min-height: 48px;
-  padding: 0 22px;
+  padding: 0 32px;
+  overflow: hidden;
   border: 0;
-  border-radius: 14px;
-  background: #0b1526;
+  border-radius: 999px;
   color: #fff;
-  font: 700 16px/1 var(--font-supreme), system-ui, sans-serif;
+  font: 600 16px/1 var(--font-pally), var(--font-switzer), system-ui, sans-serif;
   white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 160ms ease;
-}
-
-.btn:hover {
-  background: #1d2a40;
+  user-select: none;
+  box-shadow: 0 8px 18px -10px rgba(0, 122, 255, 0.6);
+  transition: transform 120ms ease;
 }
 
 .btn:active {
-  background: #050b16;
+  transform: translateY(1px);
 }
 
 .btn:disabled {
-  opacity: 0.45;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
 .btn:focus-visible {
-  outline: 2px solid #2468d4;
+  outline: 2px solid #007aff;
   outline-offset: 3px;
 }
 
-/* For dark sections. */
-.light {
-  background: #fff;
-  color: #0b1526;
+.surface {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, #5aa9ff 0%, #007aff 30%, #3d9bff 52%, #0a6de6 72%, #5aa9ff 100%) 0 0 / 220% 220%;
+  animation: gloss-drift 6s ease-in-out infinite;
 }
 
-.light:hover {
-  background: #e4ecf6;
+.shine {
+  position: absolute;
+  top: 4px;
+  left: 12px;
+  right: 12px;
+  height: 50%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.3);
+  filter: blur(3px);
+  pointer-events: none;
 }
 
-.light:active {
-  background: #d3deeb;
-}
-
-.light:focus-visible {
-  outline-color: #fff;
+.label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .arrow {
@@ -59,10 +66,23 @@
 }
 
 .btn:hover .arrow {
-  transform: translate(2px, -2px);
+  transform: translateX(2px);
+}
+
+@keyframes gloss-drift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .surface {
+    animation: none;
+  }
   .arrow {
     transition: none;
   }

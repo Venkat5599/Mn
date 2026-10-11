@@ -25,6 +25,17 @@ const supreme = localFont({
   display: "swap",
 });
 
+// Pally (Indian Type Foundry, via Fontshare, free licence): the hero voice, as on the scrappypet landing.
+const pally = localFont({
+  src: [
+    { path: "./fonts/Pally-400.woff2", weight: "400" },
+    { path: "./fonts/Pally-500.woff2", weight: "500" },
+    { path: "./fonts/Pally-700.woff2", weight: "700" },
+  ],
+  variable: "--font-pally",
+  display: "swap",
+});
+
 const switzer = localFont({
   src: [
     { path: "./fonts/Switzer-400.woff2", weight: "400" },
@@ -46,7 +57,7 @@ export const viewport: Viewport = { themeColor: "#1b211e", width: "device-width"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sentient.variable} ${switzer.variable} ${supreme.variable}`}>
+    <html lang="en" className={`${sentient.variable} ${switzer.variable} ${supreme.variable} ${pally.variable}`}>
       <body>
         <Providers>{children}</Providers>
       </body>

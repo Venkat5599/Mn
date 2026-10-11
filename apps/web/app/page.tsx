@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { AppWindow, ArrowUpRight, House, SealCheck, ShieldCheck, Umbrella } from "@phosphor-icons/react";
 import { LinkButton } from "@/components/Button";
-import { HeroTrace } from "@/components/HeroTrace";
+import { SkyHero } from "@/components/SkyHero";
 import { LitCard, Marquee, Settle, TiltWindow, Wordmark } from "@/components/LandingMotion";
 import { Mark } from "@/components/Mark";
 import { MorphNav } from "@/components/MorphNav";
@@ -47,22 +47,6 @@ const Tick = ({ ok }: { ok: boolean | null }) =>
     </svg>
   );
 
-/** A hero door, ported from Scrappy: the whole card is the link, the arrow travels on hover. */
-function Door({ href, side, title, line }: { href: string; side: string; title: string; line: string }) {
-  return (
-    <Link href={href} className={s.door}>
-      <span className={s.doorSide}>
-        {side}
-        <Arrow size={18} />
-      </span>
-      <span>
-        <b className={s.doorTitle}>{title}</b>
-        <span className={s.doorLine}>{line}</span>
-      </span>
-    </Link>
-  );
-}
-
 const SIDE = ["Markets", "Price Protection", "Portfolio", "Evidence Center", "Settlements"];
 
 export default function Landing() {
@@ -97,28 +81,9 @@ export default function Landing() {
     <div className={s.page} id="top">
       {/* ── hero ─────────────────────────────────────────── */}
       <MorphNav links={NAV} cta={{ href: "/app", label: "Launch App", icon: ArrowUpRight }} />
-      {/* HERO: ported from Scrappy. One contract, end to end, is the centrepiece. */}
-      <section className={s.hero}>
-        <div className={s.heroTop}>
-          <h1>
-            <span className={s.h1One}>Your GPU hours,</span>
-            <span className={s.h1Two}>protected by proof.</span>
-          </h1>
-          <p>
-            Protection against reserved compute that never shows up. Collateral is locked onchain, delivery is proven by real work,
-            and payouts settle on Monad.
-          </p>
-        </div>
+      <SkyHero />
 
-        <HeroTrace />
-
-        <div className={s.doors}>
-          <Door href="/app" side="For buyers" title="Protect your GPU hours" line="Buy cover before the window opens. Paid if the host fails." />
-          <Door href="/app/issue" side="For sellers" title="Issue protection" line="Lock the payout as collateral. Earn the premium." />
-        </div>
-      </section>
-
-      {/* ── product window: live data, straddling the dark ground and the page ── */}
+      {/* ── product window: live data ───────────────────── */}
       <section className={s.productBand}>
         <TiltWindow className={s.window} id="product">
           <div className={s.winBar}>
@@ -514,7 +479,7 @@ export default function Landing() {
             </Settle>
           ))}
         </div>
-        <LinkButton href="/app" tone="light">
+        <LinkButton href="/app">
           Launch App
         </LinkButton>
       </section>
