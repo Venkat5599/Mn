@@ -17,7 +17,7 @@ const NAV = [
   { href: "#product", label: "Product" },
   { href: "#proof", label: "Proofs" },
   { href: "#protect", label: "Price Protection" },
-  { href: "#roles", label: "Who It's For" },
+  { href: "#assurance", label: "Security" },
 ];
 
 const Arrow = ({ size = 12 }: { size?: number }) => (
@@ -463,6 +463,36 @@ export default function Landing() {
               </Link>
             </div>
           </LitCard>
+        </Settle>
+      </section>
+
+      {/* ── assurance: what is proven, and what is not ───── */}
+      <section className={s.assure} id="assurance">
+        <div className={s.assureHead}>
+          <h2>
+            Security and assurance. <span>What is proven, and what is not.</span>
+          </h2>
+          <p>Every claim below links to something you can check yourself. The limits are stated as plainly as the guarantees.</p>
+        </div>
+        <Settle className={s.assureGrid}>
+          {(
+            [
+              ["6 of 6", "Contracts source-verified", "Exact match on the Monad testnet explorer, so the code you read is the code that runs.", addrLink(deployment.market)],
+              ["64 / 64", "Foundry tests pass", "Unit, fuzz and invariant suites, including vault conservation over random action sequences.", "https://github.com/Venkat5599/Mn/tree/main/packages/contracts/test"],
+              ["2 of 3", "Signed reports", "EIP-712 reports bound to chain and verifier, replay-protected, with a bonded 5 minute dispute window.", addrLink(deployment.oracle)],
+              ["C = M", "Fully collateralized", "A contract cannot exist until its full maximum payout is reserved, and reconcile() checks it onchain.", addrLink(deployment.vault)],
+              ["0", "Payouts from missing data", "No report by expiry releases the seller. An oracle that missed its own window abstains.", "https://github.com/Venkat5599/Mn/blob/main/docs/FINANCIAL_MODEL.md"],
+              ["Not yet", "Audited", "Testnet only, settled in a test token with no value. One operator runs all three signers in the demo.", "https://github.com/Venkat5599/Mn#known-limits-stated-plainly"],
+            ] as const
+          ).map(([k, t, d, href]) => (
+            <a key={t} href={href} target="_blank" rel="noreferrer" className={s.assureCell}>
+              <b className={s.assureKey}>{k}</b>
+              <span className={s.assureTitle}>
+                {t} <Arrow size={10} />
+              </span>
+              <p>{d}</p>
+            </a>
+          ))}
         </Settle>
       </section>
 

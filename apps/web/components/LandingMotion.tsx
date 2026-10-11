@@ -19,8 +19,8 @@ export function RiseWords({ text, delay = 0, className }: { text: string; delay?
         <motion.span
           key={`${w}-${i}`}
           style={{ display: "inline-block", marginRight: "0.24em" }}
-          initial={reduce ? false : { y: "0.42em", rotate: 2.5 }}
-          animate={{ y: 0, rotate: 0 }}
+          initial={reduce ? false : { y: "0.32em" }}
+          animate={{ y: 0 }}
           transition={{ duration: 0.9, delay: delay + i * 0.07, ease: EASE }}
         >
           {w}

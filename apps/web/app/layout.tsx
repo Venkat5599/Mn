@@ -14,6 +14,17 @@ const sentient = localFont({
   display: "swap",
 });
 
+// Supreme (Indian Type Foundry, via Fontshare, free licence): the landing page voice, one family in three weights.
+const supreme = localFont({
+  src: [
+    { path: "./fonts/Supreme-400.woff2", weight: "400" },
+    { path: "./fonts/Supreme-500.woff2", weight: "500" },
+    { path: "./fonts/Supreme-700.woff2", weight: "700" },
+  ],
+  variable: "--font-supreme",
+  display: "swap",
+});
+
 const switzer = localFont({
   src: [
     { path: "./fonts/Switzer-400.woff2", weight: "400" },
@@ -35,7 +46,7 @@ export const viewport: Viewport = { themeColor: "#1b211e", width: "device-width"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sentient.variable} ${switzer.variable}`}>
+    <html lang="en" className={`${sentient.variable} ${switzer.variable} ${supreme.variable}`}>
       <body>
         <Providers>{children}</Providers>
       </body>

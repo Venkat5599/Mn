@@ -172,9 +172,31 @@ export default function Secondary() {
                   <input value={form.hours} onChange={(e) => setForm({ ...form, hours: e.target.value })} />
                 </label>
               </div>
-              <button className="btn" style={{ justifySelf: "start" }} disabled={!form.id || !(+form.price > 0) || !(+form.units > 0)} onClick={listIt}>
-                {mine.data.approved ? "List position" : "Approve and list"}
-              </button>
+              {!mine.data.approved ? (
+                <p className={s.mute}>
+                  Listing needs one approval: it lets the{" "}
+                  <a href={addrLink(BOOK)} target="_blank" rel="noreferrer">
+                    verified order book
+                  </a>{" "}
+                  move your protection positions, and only to a buyer who pays your price. Wallets warn on this kind of approval because
+                  drainers use it too. You can revoke it here at any time.
+                </p>
+              ) : null}
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button className="btn" disabled={!form.id || !(+form.price > 0) || !(+form.units > 0)} onClick={listIt}>
+                  {mine.data.approved ? "List position" : "Approve and list"}
+                </button>
+                {mine.data.approved ? (
+                  <button
+                    className="btn quiet"
+                    onClick={() =>
+                      tx.run([{ label: "Revoke order book approval", request: { ...marketContract, functionName: "setApprovalForAll", args: [BOOK, false] } }])
+                    }
+                  >
+                    Revoke approval
+                  </button>
+                ) : null}
+              </div>
             </>
           ) : (
             <p className={s.mute}>You do not hold any protection yet. Buy some on Markets, then list it here.</p>
