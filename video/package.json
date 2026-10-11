@@ -1,0 +1,22 @@
+{
+  "name": "hyperhedge-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "voice": "bun build src/script.ts --target=node --outfile=scripts/.script.mjs && node scripts/voice.mjs",
+    "render:pitch": "remotion render src/index.ts Pitch out/hyperhedge-pitch.mp4",
+    "render:ad": "remotion render src/index.ts Ad out/hyperhedge-ad.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.290",
+    "@remotion/media-utils": "4.0.290",
+    "msedge-tts": "2.0.7",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "remotion": "4.0.290"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.12",
+    "typescript": "5.8.3"
+  }
+}
