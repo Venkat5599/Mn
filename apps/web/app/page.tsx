@@ -2,10 +2,13 @@
 
 import { STATE_LABEL, State, type State as StateT } from "@hyperhedge/sdk";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { LitCard, Marquee, RiseWords, Settle, TiltWindow, Wordmark, useScrolled } from "@/components/LandingMotion";
+import { AppWindow, ArrowUpRight, House, SealCheck, ShieldCheck, Umbrella } from "@phosphor-icons/react";
+import { LinkButton } from "@/components/Button";
+import { LitCard, Marquee, RiseWords, Settle, TiltWindow, Wordmark } from "@/components/LandingMotion";
 import { Mark } from "@/components/Mark";
+import { MorphNav } from "@/components/MorphNav";
 import { addrLink, deployment, txLink } from "@/lib/chain";
 import { loadContracts, loadOracle, loadOracleContract, loadVault, usePoll } from "@/lib/data";
 import { bytes32Label, short, usd } from "@/lib/format";
@@ -13,11 +16,11 @@ import { P8, loadPoolState } from "@/lib/pool";
 import s from "./landing.module.css";
 
 const NAV = [
-  { href: "#top", label: "Home" },
-  { href: "#product", label: "Product" },
-  { href: "#proof", label: "Proofs" },
-  { href: "#protect", label: "Price Protection" },
-  { href: "#assurance", label: "Security" },
+  { href: "#top", label: "Home", icon: House },
+  { href: "#product", label: "Product", icon: AppWindow },
+  { href: "#proof", label: "Proofs", icon: SealCheck },
+  { href: "#protect", label: "Price Protection", icon: Umbrella },
+  { href: "#assurance", label: "Security", icon: ShieldCheck },
 ];
 
 const Arrow = ({ size = 12 }: { size?: number }) => (
@@ -46,8 +49,6 @@ const Tick = ({ ok }: { ok: boolean | null }) =>
 const SIDE = ["Markets", "Price Protection", "Portfolio", "Evidence Center", "Settlements"];
 
 export default function Landing() {
-  const [menu, setMenu] = useState(false);
-  const scrolled = useScrolled(40);
   const rows = usePoll(loadContracts, 12_000, []).data ?? [];
   const oracle = usePoll(loadOracle, 12_000, []).data ?? [];
   const vault = usePoll(loadVault, 15_000, []).data;
@@ -78,30 +79,8 @@ export default function Landing() {
   return (
     <div className={s.page} id="top">
       {/* ── hero ─────────────────────────────────────────── */}
+      <MorphNav links={NAV} cta={{ href: "/app", label: "Launch App", icon: ArrowUpRight }} />
       <section className={s.hero}>
-        <header className={`${s.nav} ${scrolled ? s.navStuck : ""}`}>
-          <Link href="/" className={s.logo}>
-            <Mark size={22} />
-            <span>HYPERHEDGE</span>
-          </Link>
-          <nav className={`${s.pill} ${menu ? s.pillOpen : ""}`} aria-label="Sections">
-            {NAV.map((n, i) => (
-              <a key={n.href} href={n.href} className={i === 0 ? s.pillOn : undefined} onClick={() => setMenu(false)}>
-                {n.label}
-              </a>
-            ))}
-          </nav>
-          <div className={s.navRight}>
-            <Link href="/app" className={s.black}>
-              Launch App <Arrow />
-            </Link>
-            <button className={s.burger} onClick={() => setMenu((m) => !m)} aria-label="Menu" aria-expanded={menu}>
-              <i />
-              <i />
-              <i />
-            </button>
-          </div>
-        </header>
 
         <div className={s.heroBody}>
           <a href={addrLink(deployment.market)} target="_blank" rel="noreferrer" className={s.badge}>
@@ -115,10 +94,8 @@ export default function Landing() {
           </h1>
           <p>Buy protection against reserved compute that never shows up. Collateral is locked onchain, delivery is proven by real work, and payouts settle on Monad.</p>
           <div className={s.ctas}>
-            <Link href="/app" className={s.black}>
-              Launch App <Arrow />
-            </Link>
-            <Link href="/app/faucet" className={s.white}>
+            <LinkButton href="/app">Launch App</LinkButton>
+            <Link href="/app/faucet" className={s.textLink}>
               <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" fill="currentColor" />
               </svg>
@@ -373,9 +350,9 @@ export default function Landing() {
                   </li>
                 )}
               </ul>
-              <Link href="/app" className={s.blackSm}>
-                Browse markets <Arrow size={10} />
-              </Link>
+              <LinkButton href="/app" className={s.cardBtn}>
+                Browse markets
+              </LinkButton>
             </div>
           </LitCard>
         </Settle>
@@ -461,9 +438,9 @@ export default function Landing() {
                   <dd>{pool?.positions[0] ? `$${(Number(pool.positions[0].spot) / P8).toFixed(4)}` : "…"}</dd>
                 </div>
               </dl>
-              <Link href="/app/protect" className={s.blackSm}>
-                Get a quote <Arrow size={10} />
-              </Link>
+              <LinkButton href="/app/protect" className={s.cardBtn}>
+                Get a quote
+              </LinkButton>
             </div>
           </LitCard>
         </Settle>
@@ -522,9 +499,9 @@ export default function Landing() {
             </Settle>
           ))}
         </div>
-        <Link href="/app" className={s.whiteSolid}>
-          Launch App <Arrow />
-        </Link>
+        <LinkButton href="/app" tone="light">
+          Launch App
+        </LinkButton>
       </section>
 
       {/* ── footer: the dark floor continues ─────────────── */}

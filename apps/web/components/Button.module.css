@@ -1,0 +1,69 @@
+/* Ported from the Scrappy button: solid fill, no glow, no lift. Hover shifts tone and the arrow travels up-right. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 14px;
+  background: #0b1526;
+  color: #fff;
+  font: 700 16px/1 var(--font-supreme), system-ui, sans-serif;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 160ms ease;
+}
+
+.btn:hover {
+  background: #1d2a40;
+}
+
+.btn:active {
+  background: #050b16;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible {
+  outline: 2px solid #2468d4;
+  outline-offset: 3px;
+}
+
+/* For dark sections. */
+.light {
+  background: #fff;
+  color: #0b1526;
+}
+
+.light:hover {
+  background: #e4ecf6;
+}
+
+.light:active {
+  background: #d3deeb;
+}
+
+.light:focus-visible {
+  outline-color: #fff;
+}
+
+.arrow {
+  flex: none;
+  transition: transform 200ms cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+.btn:hover .arrow {
+  transform: translate(2px, -2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow {
+    transition: none;
+  }
+}

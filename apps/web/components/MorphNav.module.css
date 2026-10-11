@@ -1,0 +1,199 @@
+/* Ported from Scrappy's MorphNav, recoloured to the landing palette (white over the sky, navy ink, tonal blue). */
+.wrap {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  padding: 12px clamp(16px, 4vw, 40px) 0;
+  pointer-events: none;
+}
+
+.nav {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  border: 1px solid transparent;
+  font-family: var(--font-supreme), system-ui, sans-serif;
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease;
+}
+
+.full {
+  height: 64px;
+  max-width: 1180px;
+  padding: 0 10px 0 20px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.small {
+  height: 56px;
+  max-width: 480px;
+  padding: 0 8px 0 14px;
+  border-color: rgba(11, 21, 38, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+}
+
+.brand {
+  flex: none;
+  color: #0b1526;
+  text-decoration: none;
+}
+
+.brandIn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.word {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: font-size 300ms ease;
+}
+
+.small .word {
+  font-size: 14px;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #46516a;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.full .link {
+  padding: 9px 14px;
+  border-radius: 12px;
+}
+
+.small .link {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
+
+.link:hover {
+  color: #0b1526;
+}
+
+.link.on {
+  color: #1a54b0;
+  font-weight: 700;
+}
+
+.link:focus-visible,
+.cta:focus-visible,
+.brand:focus-visible {
+  outline: 2px solid #2468d4;
+  outline-offset: 2px;
+}
+
+.lit {
+  position: absolute;
+  inset: 0;
+  background: rgba(42, 127, 230, 0.12);
+}
+
+.linkIn {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cta {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #0b1526;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 160ms ease;
+}
+
+.full .cta {
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 14px;
+}
+
+.small .cta {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
+
+.cta:hover {
+  background: #1d2a40;
+}
+
+.ctaIcon {
+  transition: transform 200ms cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+.cta:hover .ctaIcon {
+  transform: translate(2px, -2px);
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Wide bar: links only fit from tablet up. The scrolled pill shows its icons at every width. */
+@media (max-width: 860px) {
+  .full .links {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .small {
+    padding-left: 10px;
+  }
+  .small .word {
+    display: none;
+  }
+  .small .links {
+    gap: 0;
+  }
+  .small .link {
+    width: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctaIcon {
+    transition: none;
+  }
+}

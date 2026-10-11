@@ -39,165 +39,52 @@
   text-decoration: none;
 }
 
-/* ── nav ─────────────────────────────────────────────── */
-.navStuck {
-  max-width: 980px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow:
-    inset 0 0 0 1px rgba(14, 17, 22, 0.06),
-    0 3px 8px -4px rgba(23, 103, 210, 0.22);
-}
-
-.navStuck .pill {
-  background: transparent;
-  box-shadow: none;
-}
-
+/* ── hero: the sky, with Scrappy's grain laid on the substrate beneath the content ── */
 .hero {
   position: relative;
+  isolation: isolate;
   padding: 76px var(--gutter) 0;
   background: linear-gradient(180deg, var(--sky) 0%, #e6eef6 34%, #f5f8fb 62%, var(--paper) 100%);
 }
 
-.nav {
-  position: fixed;
-  top: 12px;
-  left: 0;
-  right: 0;
-  width: calc(100% - 2 * var(--gutter) + 16px);
-  z-index: 20;
-  padding: 8px 8px 8px 16px;
-  border-radius: 14px;
-  transition:
-    background-color 0.35s ease,
-    box-shadow 0.35s ease,
-    max-width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  max-width: 1180px;
-  margin: 0 auto;
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.07;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-.logo {
+/* The secondary action is a text link, never a second boxed button. */
+.textLink {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  font-weight: 500;
-  font-size: 15px;
-  letter-spacing: 0.01em;
-  color: var(--ink);
-}
-
-.pill {
-  display: flex;
-  gap: 2px;
-  padding: 4px;
-  border-radius: 11px;
-  background: rgba(255, 255, 255, 0.78);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.9),
-    0 1px 2px rgba(23, 103, 210, 0.08);
-}
-
-.pill a {
-  padding: 7px 14px;
-  border-radius: 8px;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--ink-2);
-  transition: color 0.15s ease;
-}
-
-.pill a:hover {
-  color: var(--ink);
-}
-
-.pill .pillOn {
-  color: var(--blue-deep);
-  background: rgba(42, 127, 230, 0.1);
-}
-
-.navRight {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-}
-
-.black,
-.white,
-.blackSm,
-.whiteSolid {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
-  border-radius: 10px;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 1;
-  white-space: nowrap;
-  transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
+  min-height: 48px;
+  padding: 0 6px;
+  color: var(--blue-deep);
+  font-size: 16px;
+  font-weight: 700;
+  transition: color 160ms ease;
 }
 
-.black {
-  padding: 12px 18px;
-  color: #fff;
-  background: var(--ink);
-}
-
-.black:hover {
-  background: #262b34;
-}
-
-.white {
-  padding: 12px 18px;
+.textLink:hover {
   color: var(--ink);
-  background: #fff;
-  box-shadow: inset 0 0 0 1px var(--line);
 }
 
-.white:hover {
-  background: #f1f4f8;
+.textLink:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
-.black svg,
-.blackSm svg,
-.whiteSolid svg {
-  transition: transform 0.18s ease;
-}
-
-.black:hover svg,
-.blackSm:hover svg,
-.whiteSolid:hover svg {
-  transform: translate(1.5px, -1.5px);
-}
-
-.burger {
-  display: none;
-  appearance: none;
-  border: 0;
-  background: #fff;
-  border-radius: 999px;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  padding: 0;
-  cursor: pointer;
-  box-shadow: inset 0 0 0 1px var(--line);
-  place-content: center;
-  gap: 4px;
-}
-
-.burger i {
-  display: block;
-  width: 16px;
-  height: 1.6px;
-  border-radius: 2px;
-  background: var(--ink);
+.cardBtn {
+  justify-self: start;
+  margin-top: 4px;
 }
 
 /* ── hero copy ───────────────────────────────────────── */
@@ -784,19 +671,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.blackSm {
-  justify-self: start;
-  margin-top: 4px;
-  padding: 9px 14px;
-  font-size: 13px;
-  color: #fff;
-  background: var(--ink);
-}
-
-.blackSm:hover {
-  background: #262b34;
-}
-
 /* ── alternating rows ────────────────────────────────── */
 .features {
   display: grid;
@@ -1003,16 +877,6 @@
   font-size: 14.5px;
 }
 
-.whiteSolid {
-  padding: 12px 18px;
-  color: var(--ink);
-  background: #fff;
-}
-
-.whiteSolid:hover {
-  background: #dfe6ef;
-}
-
 /* ── footer: the dark floor continues ───────────────── */
 .footer {
   position: relative;
@@ -1177,33 +1041,6 @@
 }
 
 @media (max-width: 860px) {
-  .nav {
-    grid-template-columns: 1fr auto;
-  }
-  .pill {
-    display: none;
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    right: 0;
-    flex-direction: column;
-    border-radius: 16px;
-    padding: 8px;
-    background: #fff;
-    box-shadow:
-      inset 0 0 0 1px var(--line),
-      0 4px 10px -4px rgba(23, 103, 210, 0.2);
-  }
-  .pill a {
-    padding: 11px 14px;
-    border-radius: 10px;
-  }
-  .pillOpen {
-    display: flex;
-  }
-  .burger {
-    display: grid;
-  }
   .cards3,
   .roles,
   .assureGrid,
@@ -1230,9 +1067,6 @@
 }
 
 @media (max-width: 640px) {
-  .navRight .black {
-    display: none;
-  }
   .winBody {
     grid-template-columns: 1fr;
   }
