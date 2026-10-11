@@ -217,8 +217,13 @@
   color: var(--ink-3);
 }
 
+.heroBody h1 {
+  color: #0b3d91;
+}
+
 .heroBody h1 span {
   display: block;
+  color: var(--blue);
 }
 
 .heroBody > p {
