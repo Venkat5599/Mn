@@ -1,4 +1,4 @@
-/* Ported from Scrappy's MorphNav, recoloured to the landing palette (white over the sky, navy ink, tonal blue). */
+/* Ported from Scrappy's MorphNav, in its own dark tones (green-black ground, pale blue where Scrappy used leaf). */
 .wrap {
   position: fixed;
   inset: 0 0 auto;
@@ -27,22 +27,24 @@
   height: 64px;
   max-width: 1180px;
   padding: 0 10px 0 20px;
-  background: rgba(255, 255, 255, 0.72);
+  background: #151816;
 }
 
 .small {
   height: 56px;
   max-width: 480px;
   padding: 0 8px 0 14px;
-  border-color: rgba(11, 21, 38, 0.08);
-  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(198, 219, 247, 0.1);
+  background: rgba(21, 24, 22, 0.9);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
   backdrop-filter: blur(16px) saturate(1.4);
 }
 
 .brand {
   flex: none;
-  color: #0b1526;
+  color: #eef1ea;
+  --ink: #eef1ea;
+  --cyan: #c6dbf7;
   text-decoration: none;
 }
 
@@ -77,7 +79,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #46516a;
+  color: #b6bdb7;
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
@@ -96,25 +98,25 @@
 }
 
 .link:hover {
-  color: #0b1526;
+  color: #eef1ea;
 }
 
 .link.on {
-  color: #1a54b0;
+  color: #0c0e0d;
   font-weight: 700;
 }
 
 .link:focus-visible,
 .cta:focus-visible,
 .brand:focus-visible {
-  outline: 2px solid #2468d4;
+  outline: 2px solid #c6dbf7;
   outline-offset: 2px;
 }
 
 .lit {
   position: absolute;
   inset: 0;
-  background: rgba(42, 127, 230, 0.12);
+  background: #c6dbf7;
 }
 
 .linkIn {
@@ -129,8 +131,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: #0b1526;
-  color: #fff;
+  background: #c6dbf7;
+  color: #0c0e0d;
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
@@ -150,7 +152,7 @@
 }
 
 .cta:hover {
-  background: #1d2a40;
+  background: #dde9fa;
 }
 
 .ctaIcon {

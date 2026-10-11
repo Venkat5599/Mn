@@ -39,12 +39,24 @@
   text-decoration: none;
 }
 
-/* ── hero: the sky, with Scrappy's grain laid on the substrate beneath the content ── */
+/* ── hero: ported from Scrappy. Green-black ground with grain on the substrate, a two-tone headline,
+   one contract traced end to end, and two doors. ── */
 .hero {
+  --ground: #0c0e0d;
+  --ground-deep: #151816;
+  --field: #1f2421;
+  --ink: #eef1ea;
+  --cyan: #c6dbf7;
   position: relative;
   isolation: isolate;
-  padding: 76px var(--gutter) 0;
-  background: linear-gradient(180deg, var(--sky) 0%, #e6eef6 34%, #f5f8fb 62%, var(--paper) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(32px, 4vw, 40px);
+  min-height: 100svh;
+  padding: 112px max(var(--gutter), calc((100% - 1400px) / 2)) 40px;
+  background: var(--ground);
+  color: var(--ink);
 }
 
 .hero::before {
@@ -54,104 +66,138 @@
   z-index: -1;
   pointer-events: none;
   opacity: 0.07;
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
-  mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%);
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-/* The secondary action is a text link, never a second boxed button. */
-.textLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 48px;
-  padding: 0 6px;
-  color: var(--blue-deep);
-  font-size: 16px;
-  font-weight: 700;
-  transition: color 160ms ease;
+.heroTop {
+  display: grid;
+  gap: 20px;
+  align-items: end;
 }
 
-.textLink:hover {
+@media (min-width: 1024px) {
+  .heroTop {
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+  }
+}
+
+.heroTop h1 {
+  margin: 0;
   color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.015em;
 }
 
-.textLink:focus-visible {
-  outline: 2px solid var(--blue);
+.h1One,
+.h1Two {
+  display: block;
+  white-space: nowrap;
+}
+
+.h1One {
+  color: #b6bdb7;
+  font-size: clamp(1.55rem, 4.2vw, 3.4rem);
+  line-height: 1.1;
+}
+
+.h1Two {
+  color: var(--cyan);
+  font-size: clamp(2.3rem, 8.4vw, 6.4rem);
+  line-height: 1;
+}
+
+.heroTop p {
+  max-width: 28rem;
+  margin: 0;
+  padding-bottom: 8px;
+  color: #b6bdb7;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+@media (min-width: 1024px) {
+  .heroTop p {
+    justify-self: end;
+  }
+}
+
+.doors {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  .doors {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.door {
+  display: flex;
+  min-height: 112px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  border-radius: 22px;
+  background: var(--ground-deep);
+  padding: 22px 24px;
+  color: var(--ink);
+  transition: background-color 200ms ease;
+}
+
+.door:hover {
+  background: var(--field);
+}
+
+.door:focus-visible {
+  outline: 2px solid var(--cyan);
   outline-offset: 3px;
-  border-radius: 6px;
+}
+
+.doorSide {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #8b948c;
+  font-size: 14px;
+}
+
+.doorSide svg {
+  color: #b6bdb7;
+  transition:
+    transform 200ms cubic-bezier(0.3, 0.7, 0.4, 1),
+    color 200ms ease;
+}
+
+.door:hover .doorSide svg {
+  color: var(--cyan);
+  transform: translate(2px, -2px);
+}
+
+.doorTitle {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.doorLine {
+  display: block;
+  margin-top: 4px;
+  color: #b6bdb7;
+  font-size: 15px;
+}
+
+/* The window straddles the dark ground and the white page, so the seam sits behind it. */
+.productBand {
+  padding: 56px var(--gutter) 0;
+  background: linear-gradient(180deg, #0c0e0d 0, #0c0e0d 46%, var(--paper) 46%);
 }
 
 .cardBtn {
   justify-self: start;
   margin-top: 4px;
-}
-
-/* ── hero copy ───────────────────────────────────────── */
-.heroBody {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: clamp(56px, 9vw, 96px) 0 clamp(40px, 6vw, 60px);
-  text-align: center;
-  display: grid;
-  justify-items: center;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  background: #fff;
-  color: var(--ink-2);
-  font-size: 12.5px;
-  font-weight: 500;
-  box-shadow: inset 0 0 0 1px var(--line);
-  transition: color 0.15s ease;
-}
-
-.badge:hover {
-  color: var(--ink);
-}
-
-.heroBody h1 {
-  margin: 22px 0 0;
-  font-size: clamp(40px, 6.6vw, 76px);
-  line-height: 1.04;
-}
-
-.section h2 span,
-.copy h3 span,
-.dark h2 span {
-  color: var(--ink-3);
-}
-
-.heroBody h1 {
-  color: #0a2556;
-}
-
-.heroBody h1 > span {
-  display: block;
-}
-
-.heroBody h1 .h1Two {
-  color: var(--blue);
-}
-
-.heroBody > p {
-  max-width: 520px;
-  margin: 22px 0 0;
-  color: var(--ink-2);
-  font-size: 16px;
-}
-
-.ctas {
-  display: flex;
-  gap: 10px;
-  margin-top: 30px;
-  flex-wrap: wrap;
-  justify-content: center;
 }
 
 /* ── product window ──────────────────────────────────── */

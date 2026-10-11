@@ -6,7 +6,8 @@ import { useMemo } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { AppWindow, ArrowUpRight, House, SealCheck, ShieldCheck, Umbrella } from "@phosphor-icons/react";
 import { LinkButton } from "@/components/Button";
-import { LitCard, Marquee, RiseWords, Settle, TiltWindow, Wordmark } from "@/components/LandingMotion";
+import { HeroTrace } from "@/components/HeroTrace";
+import { LitCard, Marquee, Settle, TiltWindow, Wordmark } from "@/components/LandingMotion";
 import { Mark } from "@/components/Mark";
 import { MorphNav } from "@/components/MorphNav";
 import { addrLink, deployment, txLink } from "@/lib/chain";
@@ -46,6 +47,22 @@ const Tick = ({ ok }: { ok: boolean | null }) =>
     </svg>
   );
 
+/** A hero door, ported from Scrappy: the whole card is the link, the arrow travels on hover. */
+function Door({ href, side, title, line }: { href: string; side: string; title: string; line: string }) {
+  return (
+    <Link href={href} className={s.door}>
+      <span className={s.doorSide}>
+        {side}
+        <Arrow size={18} />
+      </span>
+      <span>
+        <b className={s.doorTitle}>{title}</b>
+        <span className={s.doorLine}>{line}</span>
+      </span>
+    </Link>
+  );
+}
+
 const SIDE = ["Markets", "Price Protection", "Portfolio", "Evidence Center", "Settlements"];
 
 export default function Landing() {
@@ -80,31 +97,29 @@ export default function Landing() {
     <div className={s.page} id="top">
       {/* ── hero ─────────────────────────────────────────── */}
       <MorphNav links={NAV} cta={{ href: "/app", label: "Launch App", icon: ArrowUpRight }} />
+      {/* HERO: ported from Scrappy. One contract, end to end, is the centrepiece. */}
       <section className={s.hero}>
-
-        <div className={s.heroBody}>
-          <a href={addrLink(deployment.market)} target="_blank" rel="noreferrer" className={s.badge}>
-            <Mark size={12} />
-            Live on Monad testnet
-            <Arrow size={10} />
-          </a>
+        <div className={s.heroTop}>
           <h1>
-            <RiseWords text="Your GPU Hours." />
-            <RiseWords text="Protected by Proof." delay={0.18} className={s.h1Two} />
+            <span className={s.h1One}>Your GPU hours,</span>
+            <span className={s.h1Two}>protected by proof.</span>
           </h1>
-          <p>Buy protection against reserved compute that never shows up. Collateral is locked onchain, delivery is proven by real work, and payouts settle on Monad.</p>
-          <div className={s.ctas}>
-            <LinkButton href="/app">Launch App</LinkButton>
-            <Link href="/app/faucet" className={s.textLink}>
-              <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" fill="currentColor" />
-              </svg>
-              Get Test Funds
-            </Link>
-          </div>
+          <p>
+            Protection against reserved compute that never shows up. Collateral is locked onchain, delivery is proven by real work,
+            and payouts settle on Monad.
+          </p>
         </div>
 
-        {/* ── product window: live data ───────────────────── */}
+        <HeroTrace />
+
+        <div className={s.doors}>
+          <Door href="/app" side="For buyers" title="Protect your GPU hours" line="Buy cover before the window opens. Paid if the host fails." />
+          <Door href="/app/issue" side="For sellers" title="Issue protection" line="Lock the payout as collateral. Earn the premium." />
+        </div>
+      </section>
+
+      {/* ── product window: live data, straddling the dark ground and the page ── */}
+      <section className={s.productBand}>
         <TiltWindow className={s.window} id="product">
           <div className={s.winBar}>
             <i />
