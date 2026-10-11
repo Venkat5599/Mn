@@ -8,6 +8,7 @@
     "start": "bun src/index.ts",
     "demo": "bun scripts/run-demo.ts",
     "dispute": "bun scripts/run-dispute.ts",
+    "open-market": "bun scripts/open-market.ts",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {

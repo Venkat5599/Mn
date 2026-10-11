@@ -53,10 +53,13 @@ export default function Landing() {
   const vault = usePoll(loadVault, 15_000, []).data;
   const pool = usePoll(loadPoolState, 20_000, []).data;
 
-  // The window shows the most recent contract the oracle actually challenged.
+  // The window shows a contract whose delivery window is running right now, so its proofs fill in live;
+  // otherwise the latest contract whose host actually answered proofs; otherwise the latest one challenged.
   const featuredId = useMemo(() => {
     const seen = oracle.filter((o) => o.issued > 0).sort((a, b) => Number(b.id) - Number(a.id));
-    return seen[0]?.id;
+    const now = Date.now() / 1000;
+    const live = oracle.find((o) => o.sla && now >= o.windowStart && now <= o.windowEnd);
+    return (live ?? seen.find((o) => o.answered > 0) ?? seen[0])?.id;
   }, [oracle]);
   const featured = usePoll(() => (featuredId ? loadOracleContract(BigInt(featuredId)) : Promise.resolve(undefined)), 12_000, [featuredId]).data;
   const featuredRow = rows.find((r) => r.id.toString() === featuredId);
@@ -478,7 +481,7 @@ export default function Landing() {
           {(
             [
               ["6 of 6", "Contracts source-verified", "Exact match on the Monad testnet explorer, so the code you read is the code that runs.", addrLink(deployment.market)],
-              ["64 / 64", "Foundry tests pass", "Unit, fuzz and invariant suites, including vault conservation over random action sequences.", "https://github.com/Venkat5599/Mn/tree/main/packages/contracts/test"],
+              ["69 / 69", "Foundry tests pass", "Unit, fuzz and invariant suites, vault conservation over random action sequences, and malicious-token cases.", "https://github.com/Venkat5599/Mn/tree/main/packages/contracts/test"],
               ["2 of 3", "Signed reports", "EIP-712 reports bound to chain and verifier, replay-protected, with a bonded 5 minute dispute window.", addrLink(deployment.oracle)],
               ["C = M", "Fully collateralized", "A contract cannot exist until its full maximum payout is reserved, and reconcile() checks it onchain.", addrLink(deployment.vault)],
               ["0", "Payouts from missing data", "No report by expiry releases the seller. An oracle that missed its own window abstains.", "https://github.com/Venkat5599/Mn/blob/main/docs/FINANCIAL_MODEL.md"],

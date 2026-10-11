@@ -81,7 +81,7 @@ Every release-gate item, mapped to its test or transaction: [`docs/RELEASE_GATE.
 
 1. Open **https://hyperhedge-app.vercel.app** with MetaMask or any EVM wallet. It offers to add Monad testnet.
 2. **Test funds:** MON from [faucet.monad.xyz](https://faucet.monad.xyz), then 1,000 hhUSD from the in-app faucet. hhUSD is a test token with no value.
-3. **Buy:** buy protection on an open contract, or **Issue** your own. The host URL defaults to the demo VPS agent.
+3. **Buy:** contract **#4** stays open for buyers until 20 Oct (18 units, 4 hhUSD premium, 50 hhUSD payout). Or **Issue** your own short contract to watch a full lifecycle. The host URL defaults to the demo VPS agent.
 4. **Watch:** follow the proof tape fill in during the delivery window, then press **Verify the evidence yourself** after the report.
 
 ## Repository
@@ -103,7 +103,7 @@ Needs [bun](https://bun.sh) 1.3+ and [Foundry](https://getfoundry.sh).
 ```bash
 bun install
 bun run setup                 # forge-std + OpenZeppelin
-bun run test                  # 8 sdk tests, then 64 Foundry tests (unit, fuzz, invariants)
+bun run test                  # 8 sdk tests, then 69 Foundry tests (unit, fuzz, invariants, malicious tokens)
 bun run abi                   # regenerate ABIs after contract changes
 bun --cwd apps/web run dev    # terminal on http://localhost:3000
 ```
@@ -114,7 +114,7 @@ Deploy your own: put `DEPLOYER_PRIVATE_KEY` and `SIGNER_{1,2,3}_ADDRESS` in `.en
 
 | Check | Result |
 |---|---|
-| Foundry unit + fuzz, every edge case in the financial model, listings and price pool | 64 / 64 pass |
+| Foundry unit + fuzz, every edge case in the financial model, listings, price pool and malicious tokens | 69 / 69 pass |
 | Invariants (vault reconciles, collateral covers liabilities) over random action sequences | pass |
 | SDK: proof-of-work, SLA commitment, evidence recount and tamper detection | 8 / 8 pass |
 | Delivered, failed and disputed lifecycles on Monad testnet, from fresh wallets | see the runs above |

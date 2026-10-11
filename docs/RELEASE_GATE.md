@@ -2,7 +2,7 @@
 
 The checklist from `docs/PRD.md` §9, with the test or testnet transaction that proves each item.
 
-- **Tests:** run with `bun run test` (64 Foundry tests including fuzz and invariants, 8 SDK tests, all passing on 11 Oct 2026).
+- **Tests:** run with `bun run test` (69 Foundry tests including fuzz, invariants and malicious tokens, 8 SDK tests, all passing on 11 Oct 2026).
 - **Transactions:** live on Monad testnet (chain 10143). Explorer links use `https://testnet.monadexplorer.com/tx/<hash>`.
 
 **Status: 18 of 20 met.** The two open items are the videos, which are recorded by the team.
@@ -32,7 +32,7 @@ The checklist from `docs/PRD.md` §9, with the test or testnet transaction that 
 | ✅ A buyer cannot buy more protection than is available | `test_cannotOversell`, `test_cannotBuyAfterSaleEnd`, `test_slippageGuard`, `test_cannotSellMoreThanPool` (pool) |
 | ✅ Position ownership and claim rights stay consistent | `test_claimRightFollowsTransfer`, `test_claimRightMovesWithFill` (listings) |
 | ✅ Invalid and replayed orders are rejected | `test_cannotOverfill`, `test_cancelledAndExpiredCannotFill`, `test_staleListingFailsWhenSellerMovedUnits`, `test_onlySellerCancels`, `test_listRequiresUnitsAndApproval` |
-| ✅ Token transfer failures revert safely | `test_buyWithoutAllowanceRevertsCleanly`. Not covered yet: a malicious or false-returning ERC-20, which is only relevant once arbitrary tokens are allowed. Today the token is fixed at deploy. |
+| ✅ Token transfer failures revert safely | `test_buyWithoutAllowanceRevertsCleanly`, `test_falseReturningTokenRevertsAndCreditsNothing`, `test_noReturnTokenWorksBothWays`, `test_reentrantWithdrawIsBlocked`, `test_reentrantDepositIsBlocked`. Fee-on-transfer tokens are not supported; `test_feeOnTransferIsDetectedByReconcile` shows `reconcile()` flags the mismatch. The deployed token is fixed at construction. |
 
 ## End-to-end proof on Monad testnet
 

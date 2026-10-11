@@ -214,10 +214,11 @@ Not audited. Testnet only.
 
 ## 8. Testing
 
-- **Foundry, 64 tests:**
+- **Foundry, 69 tests:**
   - unit tests for every rule in FINANCIAL_MODEL;
   - fuzz tests (`testFuzz_settlementConserves`, `testFuzz_solvency`);
-  - invariants (`invariant_vaultReconciles`, `invariant_collateralCoversLiabilities`) over random action sequences.
+  - invariants (`invariant_vaultReconciles`, `invariant_collateralCoversLiabilities`) over random action sequences;
+  - malicious tokens (`MaliciousToken.t.sol`): false-returning, no-return, reentrant on deposit and withdraw, and fee-on-transfer (detected by `reconcile()`, not supported).
 - **SDK, 8 tests:** proof-of-work, SLA commitment, evidence recount and tamper detection.
 - **Live end-to-end on Monad testnet:**
   - `apps/oracle/scripts/run-demo.ts` runs the delivered and failure paths.
