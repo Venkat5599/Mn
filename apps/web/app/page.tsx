@@ -3,6 +3,8 @@
 import { STATE_LABEL, State, type State as StateT } from "@hyperhedge/sdk";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { LitCard, Marquee, RiseWords, Settle, TiltWindow, Wordmark, useScrolled } from "@/components/LandingMotion";
 import { Mark } from "@/components/Mark";
 import { addrLink, deployment, txLink } from "@/lib/chain";
 import { loadContracts, loadOracle, loadOracleContract, loadVault, usePoll } from "@/lib/data";
@@ -45,6 +47,7 @@ const SIDE = ["Markets", "Price Protection", "Portfolio", "Evidence Center", "Se
 
 export default function Landing() {
   const [menu, setMenu] = useState(false);
+  const scrolled = useScrolled(40);
   const rows = usePoll(loadContracts, 12_000, []).data ?? [];
   const oracle = usePoll(loadOracle, 12_000, []).data ?? [];
   const vault = usePoll(loadVault, 15_000, []).data;
@@ -73,7 +76,7 @@ export default function Landing() {
     <div className={s.page} id="top">
       {/* ── hero ─────────────────────────────────────────── */}
       <section className={s.hero}>
-        <header className={s.nav}>
+        <header className={`${s.nav} ${scrolled ? s.navStuck : ""}`}>
           <Link href="/" className={s.logo}>
             <Mark size={22} />
             <span>HYPERHEDGE</span>
@@ -104,8 +107,8 @@ export default function Landing() {
             <Arrow size={10} />
           </a>
           <h1>
-            Your GPU Hours.
-            <span>Protected by Proof.</span>
+            <RiseWords text="Your GPU Hours." />
+            <RiseWords text="Protected by Proof." delay={0.18} className={s.h1Two} />
           </h1>
           <p>Buy protection against reserved compute that never shows up. Collateral is locked onchain, delivery is proven by real work, and payouts settle on Monad.</p>
           <div className={s.ctas}>
@@ -122,7 +125,7 @@ export default function Landing() {
         </div>
 
         {/* ── product window: live data ───────────────────── */}
-        <div className={s.window} id="product">
+        <TiltWindow className={s.window} id="product">
           <div className={s.winBar}>
             <i />
             <i />
@@ -173,10 +176,11 @@ export default function Landing() {
                   </em>
                 </div>
                 <ul className={s.steps}>
+                  <AnimatePresence initial={false}>
                   {shown.map((c) => {
                     const late = c.nonce === null && Date.now() > c.dueBy;
                     return (
-                      <li key={c.index}>
+                      <motion.li key={c.index} layout initial={{ y: -10 }} animate={{ y: 0 }} transition={{ duration: 0.45 }}>
                         <Tick ok={c.nonce !== null ? true : late ? false : null} />
                         <div>
                           <b>Challenge {c.index + 1}</b>
@@ -185,9 +189,10 @@ export default function Landing() {
                             {c.answeredAt ? `answered in ${(c.answeredAt - c.issuedAt).toLocaleString("en-US")} ms` : late ? "no answer, counts as missed" : "waiting"}
                           </span>
                         </div>
-                      </li>
+                      </motion.li>
                     );
                   })}
+                  </AnimatePresence>
                   {!shown.length && (
                     <li>
                       <Tick ok={null} />
@@ -233,17 +238,17 @@ export default function Landing() {
               </ul>
             </aside>
           </div>
-        </div>
+        </TiltWindow>
       </section>
 
       {/* ── built with ───────────────────────────────────── */}
       <section className={s.built}>
         <p>Built with open tools, settled on Monad testnet</p>
-        <div>
-          {["Monad", "Foundry", "OpenZeppelin", "viem", "wagmi", "RainbowKit"].map((n) => (
-            <b key={n}>{n}</b>
-          ))}
-        </div>
+        <Marquee
+          className={s.marquee}
+          trackClass={s.track}
+          items={["Monad", "Foundry", "OpenZeppelin", "viem", "wagmi", "RainbowKit", "Next.js", "EIP-712", "ERC-1155"]}
+        />
       </section>
 
       {/* ── three blue cards ─────────────────────────────── */}
@@ -256,9 +261,9 @@ export default function Landing() {
           Protection that knows your contract.
           <span> The right collateral, the right proof, the right payout.</span>
         </h2>
-        <div className={s.cards3}>
+        <Settle className={s.cards3}>
           <figure>
-            <div className={s.blue}>
+            <LitCard className={s.blue}>
               <div className={s.inner}>
                 <p className={s.innerHead}>Vault</p>
                 <dl className={s.rows}>
@@ -277,14 +282,14 @@ export default function Landing() {
                 </dl>
                 <span className={s.okLine}>{vault ? (vault.reconciled ? "Every token accounted for" : "Balance mismatch") : reading}</span>
               </div>
-            </div>
+            </LitCard>
             <figcaption>
               <b>Collateral first</b>
               <span>A contract cannot exist until its full payout is locked in the vault.</span>
             </figcaption>
           </figure>
           <figure>
-            <div className={s.blue}>
+            <LitCard className={s.blue}>
               <div className={s.inner}>
                 <p className={s.innerHead}>Proofs</p>
                 <b className={s.big}>{proofs.toLocaleString("en-US")}</b>
@@ -293,14 +298,14 @@ export default function Landing() {
                   <i style={{ width: `${issued ? (proofs / issued) * 100 : 0}%` }} />
                 </div>
               </div>
-            </div>
+            </LitCard>
             <figcaption>
               <b>Proven by real compute</b>
               <span>Each challenge is seeded from a fresh Monad block, so no answer can be computed in advance.</span>
             </figcaption>
           </figure>
           <figure>
-            <div className={s.blue}>
+            <LitCard className={s.blue}>
               <div className={s.inner}>
                 <p className={s.innerHead}>Settlement</p>
                 <dl className={s.rows}>
@@ -318,18 +323,18 @@ export default function Landing() {
                   </div>
                 </dl>
               </div>
-            </div>
+            </LitCard>
             <figcaption>
               <b>Paid from collateral</b>
               <span>A verified failure pays the buyer onchain. Delivery returns collateral and premium to the seller.</span>
             </figcaption>
           </figure>
-        </div>
+        </Settle>
       </section>
 
       {/* ── alternating feature rows ─────────────────────── */}
       <section className={s.features}>
-        <div className={s.row}>
+        <Settle className={s.row}>
           <div className={s.copy}>
             <a className={s.badge} href="/app">
               <Mark size={12} />
@@ -340,7 +345,7 @@ export default function Landing() {
             </h3>
             <p>Sellers lock collateral and set the terms. Buyers pay a premium per unit and hold a transferable position that pays out if delivery fails.</p>
           </div>
-          <div className={s.blue}>
+          <LitCard className={s.blue}>
             <div className={s.inner}>
               <p className={s.innerHead}>Open contracts</p>
               <ul className={s.list}>
@@ -369,10 +374,10 @@ export default function Landing() {
                 Browse markets <Arrow size={10} />
               </Link>
             </div>
-          </div>
-        </div>
+          </LitCard>
+        </Settle>
 
-        <div className={`${s.row} ${s.flip}`}>
+        <Settle className={`${s.row} ${s.flip}`}>
           <div className={s.copy}>
             <a className={s.badge} href="/app/evidence">
               <Mark size={12} />
@@ -383,7 +388,7 @@ export default function Landing() {
             </h3>
             <p>The evidence file holds every seed, nonce and block. Its hash is stored onchain, and the app re-checks each proof against Monad.</p>
           </div>
-          <div className={s.blue}>
+          <LitCard className={s.blue}>
             <div className={s.inner}>
               <p className={s.innerHead}>Verify contract #{featuredId ?? "…"}</p>
               <ul className={s.list}>
@@ -418,10 +423,10 @@ export default function Landing() {
                 </li>
               </ul>
             </div>
-          </div>
-        </div>
+          </LitCard>
+        </Settle>
 
-        <div className={s.row} id="protect">
+        <Settle className={s.row} id="protect">
           <div className={s.copy}>
             <a className={s.badge} href="/app/protect">
               <Mark size={12} />
@@ -432,7 +437,7 @@ export default function Landing() {
             </h3>
             <p>An AMM sells protection below a strike you choose. Liquidity providers lock the full payout for every position it sells.</p>
           </div>
-          <div className={s.blue}>
+          <LitCard className={s.blue}>
             <div className={s.inner}>
               <p className={s.innerHead}>MON/USD pool</p>
               <dl className={s.rows}>
@@ -457,8 +462,8 @@ export default function Landing() {
                 Get a quote <Arrow size={10} />
               </Link>
             </div>
-          </div>
-        </div>
+          </LitCard>
+        </Settle>
       </section>
 
       {/* ── dark band ────────────────────────────────────── */}
@@ -472,39 +477,98 @@ export default function Landing() {
         </h2>
         <p className={s.darkLead}>Three parties, one contract, and no support ticket deciding who is owed what.</p>
         <div className={s.roles}>
-          <article>
-            <b>The buyer</b>
-            <p>Pays a premium per unit. If the host fails to prove delivery, the full payout comes from locked collateral.</p>
-          </article>
-          <article>
-            <b>The seller</b>
-            <p>Locks the whole maximum payout to sell protection, and earns the premium when delivery is proven.</p>
-          </article>
-          <article>
-            <b>The host</b>
-            <p>Runs a small agent that answers proof-of-work challenges for the whole delivery window.</p>
-          </article>
+          {[
+            ["The buyer", "Pays a premium per unit. If the host fails to prove delivery, the full payout comes from locked collateral."],
+            ["The seller", "Locks the whole maximum payout to sell protection, and earns the premium when delivery is proven."],
+            ["The host", "Runs a small agent that answers proof-of-work challenges for the whole delivery window."],
+          ].map(([t, d], i) => (
+            <Settle key={t} className={s.role} delay={i * 0.09}>
+              <span className={s.roleNum}>0{i + 1}</span>
+              <b>{t}</b>
+              <p>{d}</p>
+            </Settle>
+          ))}
         </div>
         <Link href="/app" className={s.whiteSolid}>
           Launch App <Arrow />
         </Link>
       </section>
 
+      {/* ── footer: the dark floor continues ─────────────── */}
       <footer className={s.footer}>
-        <Link href="/" className={s.logo}>
-          <Mark size={20} />
-          <span>HYPERHEDGE</span>
-        </Link>
-        <p>Monad Metropolis 2026 · testnet only · unaudited · settled in a test token with no value</p>
-        <nav>
-          <Link href="/app">App</Link>
-          <a href="https://github.com/Venkat5599/Mn" target="_blank" rel="noreferrer">
-            GitHub
+        <div className={s.footTop}>
+          <div className={s.footBrand}>
+            <Link href="/" className={s.footLogo}>
+              <Mark size={22} />
+              <span>HYPERHEDGE</span>
+            </Link>
+            <p>Protection against GPU compute that is not delivered. Collateral locked onchain, delivery proven by real work, payouts settled on Monad.</p>
+            <dl className={s.footStats}>
+              <div>
+                <dt>Contracts</dt>
+                <dd>{rows.length || "…"}</dd>
+              </div>
+              <div>
+                <dt>Proofs answered</dt>
+                <dd>{oracle.length ? proofs.toLocaleString("en-US") : "…"}</dd>
+              </div>
+              <div>
+                <dt>Vault</dt>
+                <dd>{vault ? (vault.reconciled ? "Reconciles" : "Mismatch") : "…"}</dd>
+              </div>
+            </dl>
+          </div>
+          <nav className={s.footCols} aria-label="Footer">
+            <div>
+              <p>Trade</p>
+              <Link href="/app">Markets</Link>
+              <Link href="/app/protect">Price Protection</Link>
+              <Link href="/app/secondary">Secondary Market</Link>
+              <Link href="/app/issue">Issue a Contract</Link>
+            </div>
+            <div>
+              <p>Verify</p>
+              <Link href="/app/evidence">Evidence Center</Link>
+              <Link href="/app/settlements">Settlements</Link>
+              <Link href="/app/activity">Activity Log</Link>
+              <Link href="/app/risk">Risk Engine</Link>
+            </div>
+            <div>
+              <p>Contracts</p>
+              {(
+                [
+                  ["Market", deployment.market],
+                  ["Vault", deployment.vault],
+                  ["Oracle", deployment.oracle],
+                  ["hhUSD", deployment.token],
+                ] as const
+              ).map(([n, a]) => (
+                <a key={n} href={addrLink(a)} target="_blank" rel="noreferrer">
+                  {n} <span className="mono">{short(a)}</span>
+                </a>
+              ))}
+            </div>
+            <div>
+              <p>Project</p>
+              <a href="https://github.com/Venkat5599/Mn" target="_blank" rel="noreferrer">
+                GitHub <Arrow size={10} />
+              </a>
+              <Link href="/app/developers">Developer Portal</Link>
+              <Link href="/app/faucet">Test Funds</Link>
+              <Link href="/app/status">Status</Link>
+            </div>
+          </nav>
+        </div>
+        <div className={s.footBar}>
+          <span>Monad Metropolis 2026 · testnet only · unaudited · settled in a test token with no value</span>
+          <a href="#top">
+            Back to top
+            <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M6 10V2M2.5 5.5 6 2l3.5 3.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </a>
-          <a href={addrLink(deployment.market)} target="_blank" rel="noreferrer">
-            Contracts
-          </a>
-        </nav>
+        </div>
+        <Wordmark text="HYPERHEDGE" className={s.wordmark} />
       </footer>
     </div>
   );
