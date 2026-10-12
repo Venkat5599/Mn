@@ -1,113 +1,118 @@
 # HYPERHEDGE
 
-**Onchain protection against failed compute delivery, backed by locked collateral and verifiable evidence.**
+### Onchain protection against failed compute delivery and token price risk.
 
-HYPERHEDGE is a financial protocol prototype on Monad that lets buyers purchase protection against a compute provider failing to complete an agreed delivery commitment. Sellers lock collateral before a protection contract becomes active, and an evidence-verification process determines whether a failure can trigger a payout.
+HYPERHEDGE turns compute-delivery risk into a collateral-backed financial contract. Sellers lock the full required payout before a protection contract becomes active. Buyers pay a premium for protection. When delivery fails under the configured evidence policy, the protocol supports a claim against the locked collateral.
 
-- **Live application:** https://hyperhedge-app.vercel.app/
-- **Source code:** https://github.com/Venkat5599/Mn
-- **Network:** Monad Testnet
+Built on **Monad Testnet** for the **Monad Metropolis 2026 Hackathon**, HYPERHEDGE combines collateralized compute protection, challenge-based evidence verification, onchain claims and disputes, and a separate price-protection market.
+
+**Links**
+
+- **Live app:** https://hyperhedge-app.vercel.app/
+- **GitHub:** https://github.com/Venkat5599/Mn
+- **Technical demo:** https://youtu.be/OzmEvWe_AeY
+- **Pitch video:** https://youtu.be/8iwdtkfP4oc
 - **Track:** Onchain Finance & Trading
-- **Status:** Hackathon prototype. Not audited. Testnet assets have no monetary value.
+- **Network:** Monad Testnet, Chain ID `10143`
+
+> **Status:** Working hackathon prototype. Testnet only. Not audited. Test tokens have no monetary value.
 
 ---
 
-## 1. The Problem
+## The problem
 
-Compute buyers depend on providers to deliver workloads within agreed terms. When delivery fails, a service-level agreement alone does not guarantee that compensation will be available or that the outcome will be handled transparently.
+AI teams increasingly depend on reserved compute capacity. When a provider oversells a cluster, a node goes offline, or capacity arrives late, the buyer can lose time and money. A service-level agreement does not necessarily guarantee that compensation will be available when delivery fails.
 
-HYPERHEDGE explores a different approach: make delivery risk a financial commitment with collateral locked onchain before the agreement begins.
+HYPERHEDGE explores a different model: instead of relying only on a provider's promise to compensate a buyer, require the payout to be backed by collateral before the protection contract becomes active.
 
-The goal is to give buyers a defined protection mechanism, sellers a transparent way to back their commitments, and both sides a verifiable record of how a settlement was reached.
+## How HYPERHEDGE works
 
-## 2. The Solution
-
-HYPERHEDGE brings together collateralized delivery protection, challenge-based evidence verification, and onchain settlement.
-
-1. **Create a protection contract.** The parties define the commitment and the conditions under which protection applies.
+1. **Create a contract.** Define the compute-delivery commitment and the applicable protection conditions.
 2. **Lock collateral.** The seller deposits the required collateral before the contract becomes active.
-3. **Purchase protection.** The buyer pays a premium for the specified protection.
-4. **Verify evidence.** A challenge-and-report process evaluates evidence against the configured delivery policy.
-5. **Resolve the outcome.** The protocol allows the applicable settlement or claim path to be executed onchain.
+3. **Purchase protection.** The buyer pays a premium for the agreed protection.
+4. **Challenge the host.** The oracle service sends time-sensitive challenges to the host-side agent.
+5. **Record evidence.** Responses and missed challenges are recorded for verification.
+6. **Verify the report.** The configured signer threshold produces a signed report that the onchain verifier can check.
+7. **Settle the outcome.** The applicable claim or dispute path can be executed against the locked collateral.
 
-The protocol is designed so that a promised payout is backed by locked collateral rather than an unsecured promise to pay later.
+The design separates three things that are often conflated: the financial commitment, the evidence used to evaluate delivery, and the onchain settlement.
 
-## 3. What Was Built During the Hackathon
+## What makes it different
 
-The submission includes a working web application, smart contracts, an evidence-verification service, a host-side agent, and an SDK for interacting with the protocol.
+HYPERHEDGE is not simply a compute marketplace. Its central idea is to make protection a separate, collateral-backed financial commitment.
 
-The principal implementation areas are:
+- **Collateral before activation:** the required payout must be locked before the protection contract becomes active.
+- **Evidence-based outcomes:** the system records challenge responses and missed challenges instead of relying solely on a provider's assertion.
+- **Onchain-verifiable reports:** signed reports are checked against the configured verifier and chain context.
+- **Dispute incentives:** the prototype includes a dispute-bond mechanism for configured dispute outcomes.
+- **Separate price protection:** the application also includes a market prototype for protection against price movements.
 
-- **Collateralized compute protection:** contract creation, collateral requirements, buyer protection, and settlement paths.
-- **Evidence verification:** challenge generation, evidence collection, signed reports, and verification logic.
-- **Failure and dispute handling:** workflows for unanswered challenges, claims, disputes, and configured dispute outcomes.
-- **Price protection:** a separate onchain market prototype for protection against price movements, with liquidity and payout collateral.
-- **Trading interface:** markets, price protection, portfolio, evidence center, and settlements views.
-- **Security and accounting:** collateral accounting, chain- and verifier-bound EIP-712 reports, and replay protection.
-- **Testing and deployment:** Foundry contract tests, SDK tests, testnet deployments, and source verification.
+These are design and implementation goals, not a claim that all real-world compute delivery can already be independently verified.
 
-These are the features represented by the current repository and application. The prototype does not yet establish that a real GPU completed a production workload or that a third-party compute provider is integrated.
+## Compute-delivery evidence
 
-## 4. How It Works
+The current prototype uses a challenge-response process.
 
-### Compute delivery protection
+A fresh Monad block hash contributes to challenge-seed generation. The host-side agent must compute a proof of work and return its response within the configured challenge window. Responses and missed challenges become evidence for the reporting process.
 
-The protocol separates the protection agreement from the evidence used to determine its outcome.
+The current policy uses:
 
-- The seller locks collateral.
-- The buyer purchases protection by paying a premium.
-- A host-side agent responds to verification challenges.
-- The evidence service collects the results and produces signed reports.
-- The onchain verifier checks the report before the relevant settlement path can proceed.
+- **Signer threshold:** 2 of 3 signers
+- **Challenge window:** 5 minutes
+- **Dispute bond:** 10%
 
-The current evidence policy uses **two of three signers**, a **five-minute challenge window**, and a **10% dispute bond**, as configured by the prototype.
+The demonstration configuration sends challenges at approximately 15-second intervals. These timings and thresholds are prototype configuration, not universal guarantees of the protocol.
 
-### Failure demonstration
+The evidence service produces signed reports, and the onchain verifier checks them before the applicable outcome can proceed. The SDK also provides browser-side verification utilities so evidence checks can be reproduced.
 
-The demo includes two contrasting scenarios:
+### What the proof does and does not establish
 
-**Successful challenge responses:** the host answers the challenges and the evidence process records the responses.
+The proof of work demonstrates that the host answered a configured computational challenge. It does **not**, by itself, establish that a real GPU was available, that a requested model ran correctly, that a workload produced valid output, or that a particular GPU performance level was achieved.
 
-**Unanswered challenges:** the host stops responding, the verification process reports failure, and the buyer can exercise the configured claim path.
+The current demonstration uses a CPU-based host environment. Integrating real GPU providers and independently validating workload-specific execution are future steps.
 
-The implementation also includes a dispute demonstration in which a dispute is reviewed, a configured outcome is applied, and the vault's accounting is reconciled.
+## Demonstrated scenarios
 
-### Important evidence limitation
+The testnet demonstration covers three contract flows using fresh wallets:
 
-A completed challenge proves that the configured challenge was answered. It does **not**, by itself, prove GPU model, GPU availability, workload correctness, benchmark performance, or the quality of a real compute result.
+**1. Successful delivery**
 
-The current demonstration uses a CPU-based host environment. Integrating real GPU providers and independently validating workload execution are future development steps.
+The host answers the configured challenges, and the evidence process records the responses.
 
-## 5. Price Protection
+**2. Failed delivery**
 
-HYPERHEDGE also contains a price-protection market prototype.
+The host stops answering challenges. The verification workflow reports failure, and the buyer exercises the configured claim path against the collateral.
 
-Users can interact with a pool that offers protection associated with a selected price strike. Liquidity providers lock the required payout collateral, while buyers pay a premium for the position.
+**3. Disputed failure**
 
-The purpose is to explore how financial protection can be represented and settled through smart contracts on Monad.
+The seller disputes a reported failure. The configured dispute process upholds the failure outcome, the dispute bond is slashed according to the contract rules, and buyers claim their payouts. The demonstration reports that each buyer receives 110 hhUSD.
 
-This module is a separate risk-market component. It should not be interpreted as proof that the compute-delivery mechanism has been independently audited or validated in production.
+These are testnet demonstrations using test tokens and the current prototype's trust assumptions. They are not evidence of production use or independently operated oracle infrastructure.
 
-## 6. Why Monad?
+## Price protection
 
-HYPERHEDGE uses Monad as the execution and settlement layer for its financial agreements.
+HYPERHEDGE includes a separate price-protection pool for protection associated with a selected price strike.
 
-Smart contracts manage the protocol's core state, including protection contracts, collateral, evidence verification, and settlement operations. Users can inspect the deployed contracts and verify relevant transactions on the Monad testnet explorer.
+The pool models a market where buyers pay a premium for protection and liquidity providers lock the collateral required by the configured payout rules. This extends the application's focus from compute-delivery risk to financial risk management.
 
-Keeping the financial state onchain makes contract conditions, collateral movements, and settlement transactions independently inspectable.
+The price-protection module is a prototype and should not be interpreted as an audited or production-ready financial product.
 
-**Network details**
+---
 
-- Network: Monad Testnet
-- Chain ID: `10143`
-- RPC connectivity: Alchemy
-- Test token: hhUSD
+## Why Monad?
 
-Alchemy supplies blockchain RPC connectivity. It is infrastructure for accessing Monad, not the source of the protocol's collateral guarantees or settlement rules.
+Monad provides the onchain execution and settlement layer for HYPERHEDGE.
 
-## 7. Deployed Contracts
+The protocol uses smart contracts to manage protection agreements, collateral, evidence verification, and settlement state. Users can inspect the deployed contracts and relevant transactions on the Monad testnet explorer.
 
-The following addresses are the project's documented Monad testnet deployments.
+The project uses Alchemy RPC infrastructure to connect application services to Monad. Alchemy supplies blockchain connectivity; HYPERHEDGE's smart contracts implement the protocol's collateral and settlement logic.
+
+The project's use of frequent, unpredictable challenges also makes transaction cost and execution speed important design considerations. The prototype explores this workflow on Monad Testnet.
+
+## Deployed contracts
+
+Network: **Monad Testnet**  
+Chain ID: `10143`
 
 | Contract | Address |
 |---|---|
@@ -120,9 +125,11 @@ The following addresses are the project's documented Monad testnet deployments.
 
 Explorer: https://testnet.monadexplorer.com/
 
-These contracts are deployed to a test network. Do not send real funds or treat test tokens as assets with monetary value.
+These are testnet deployments. Verify addresses and transaction details on the explorer before interacting with the contracts.
 
-## 8. Architecture
+---
+
+## Architecture
 
 HYPERHEDGE is organized as a monorepo.
 
@@ -134,62 +141,86 @@ Mn/
 │   └── agent/        # Host-side challenge-response agent
 ├── packages/
 │   ├── contracts/    # Solidity contracts and Foundry tests
-│   └── sdk/          # ABIs, signing, evidence and verification utilities
+│   └── sdk/          # ABIs, signing, evidence and verification
 ├── deployments/      # Deployment information
 ├── docs/             # Product, architecture and financial documentation
 ├── scripts/          # Development and deployment scripts
 └── video/            # Demo-related assets
 ```
 
-### Main components
+### Web application
 
-**Web application**
+The web application provides the interface for interacting with the protocol and inspecting its state.
 
-Provides the interface for browsing markets, interacting with price protection, viewing portfolio information, inspecting evidence, and following settlements.
+Current application areas include:
 
-**Smart contracts**
+- Markets
+- Price Protection
+- Portfolio
+- Evidence Center
+- Settlements
 
-Manage protection agreements, collateral, verification, positions, and the relevant settlement rules.
+### Smart contracts
 
-**Oracle service**
+The contracts implement the protection-market logic, collateral management, report verification, positions, and settlement paths.
 
-Coordinates challenge generation and evidence collection, produces signed reports, and supports the verification workflow.
+### Oracle service
 
-**Host-side agent**
+The oracle service coordinates challenge generation, evidence collection, report signing, and related API and keeper operations.
 
-Responds to challenges issued by the evidence service.
+### Host agent
 
-**SDK**
+The host-side agent responds to challenges issued by the evidence service.
 
-Contains shared contract interfaces and utilities for signing, evidence handling, and verification.
+### SDK
 
-The oracle service and its signers are important trust assumptions. The current demo uses one operator to run all three demonstration signers; they should not be treated as three independently operated parties.
+The shared SDK provides contract interfaces and utilities for evidence handling, signing, and verification.
 
-## 9. Technology Stack
+### Trust assumptions
 
-| Layer | Technology |
+The oracle and signer infrastructure remains a trust assumption. In the current demonstration, one operator runs all three demo signers. The prototype therefore does not demonstrate operational independence between the signers.
+
+---
+
+## Technology stack
+
+| Component | Technology |
 |---|---|
 | Frontend | Next.js, React, TypeScript |
 | Smart contracts | Solidity, Foundry |
 | Blockchain | Monad Testnet |
-| Blockchain connectivity | Alchemy RPC |
-| Evidence and signing | Challenge-response workflow, EIP-712 signatures |
+| RPC infrastructure | Alchemy |
+| Signing and reports | EIP-712 |
 | Shared protocol code | TypeScript SDK |
-| Testing | Foundry tests and SDK tests |
+| Testing | Foundry and SDK tests |
 | Package management | Bun |
 
-## 10. Run Locally
+## Testing and security checks
 
-### Prerequisites
+The project reports:
+
+- **69 passing Foundry tests**, including fuzzing, invariant testing, and adversarial token scenarios.
+- **8 SDK tests.**
+- **Six deployed contracts with source verification reported.**
+- EIP-712 reports bound to chain and verifier context, with replay protection.
+- Onchain collateral accounting and vault reconciliation checks.
+
+These are project-reported development results. Run the tests yourself to reproduce them, and verify contract source and addresses using the testnet explorer.
+
+Passing tests and source verification do not constitute an independent security audit.
+
+---
+
+## Getting started
+
+### Requirements
 
 - Bun 1.3 or later
 - Foundry
 - Git
-- Access to a Monad testnet RPC endpoint for blockchain operations
+- A Monad Testnet RPC endpoint for blockchain operations
 
-### Installation
-
-Clone the public repository and install its dependencies:
+### Install dependencies
 
 ```bash
 git clone https://github.com/Venkat5599/Mn.git
@@ -199,47 +230,45 @@ bun install
 bun run setup
 ```
 
-Run the test suite:
+### Run tests
 
 ```bash
 bun run test
 ```
 
-Generate contract ABIs:
+### Generate contract ABIs
 
 ```bash
 bun run abi
 ```
 
-Start the web application:
+### Start the web application
 
 ```bash
 bun --cwd apps/web run dev
 ```
 
-Open the local address printed by the development server.
+Open the local URL printed by the development server.
 
-Follow the repository's deployment scripts and configuration for running the oracle service, host agent, and contracts. Some workflows require environment variables and funded testnet accounts.
+The oracle service, host agent, and deployment scripts may require additional configuration. Consult the relevant application and script files for the exact environment variables and commands.
 
-### Environment configuration
+### Environment variables
 
-Configure secrets locally using the variable names expected by the relevant application and deployment scripts. Do not commit private keys, API keys, signer secrets, or production credentials.
+The deployment flow uses configuration including:
 
-The project uses configuration including:
+```text
+MONAD_TESTNET_RPC_URL
+DEPLOYER_PRIVATE_KEY
+SIGNER_1_ADDRESS
+SIGNER_2_ADDRESS
+SIGNER_3_ADDRESS
+```
 
-- `MONAD_TESTNET_RPC_URL`
-- `DEPLOYER_PRIVATE_KEY`
-- `SIGNER_1_ADDRESS`
-- `SIGNER_2_ADDRESS`
-- `SIGNER_3_ADDRESS`
+Configure secrets in your local environment. Never commit private keys, API credentials, or signer secrets to GitHub, and never expose private keys through frontend environment variables.
 
-The applications may require additional environment variables. Check the relevant configuration files and setup documentation before starting each service.
+### Deploy contracts
 
-Never place private keys in frontend-exposed environment variables.
-
-### Deployment
-
-The repository's Foundry deployment flow uses:
+From the appropriate contracts package directory, configure the required environment variables and use the repository's deployment script:
 
 ```bash
 forge script script/Deploy.s.sol \
@@ -247,101 +276,81 @@ forge script script/Deploy.s.sol \
   --broadcast
 ```
 
-Run deployment commands from the appropriate contracts package directory, with the required environment variables configured. Review the deployment script before broadcasting transactions.
+Review the script and deployment configuration before broadcasting transactions. A fresh deployment may produce different addresses from those listed above.
 
-For testnet funding, use the official faucet:
-
-https://faucet.monad.xyz/
-
-Do not deploy over existing addresses or assume a fresh deployment will use the addresses documented above.
-
-## 11. Testing and Verification
-
-The project reports the following test results:
-
-- **69 Foundry tests passing**
-- **8 SDK tests**
-- Source verification reported for all six documented testnet contracts
-
-These results describe the project's recorded development and test status. They are not a substitute for an independent security audit, formal verification, or production testing.
-
-To reproduce the tests, run `bun run test` from the repository root with the required toolchain installed.
-
-## 12. Pre-existing Work and Originality Disclosure
-
-HYPERHEDGE is submitted as a working prototype developed for the Metropolis Hackathon. The repository contains the application, protocol implementation, tests, deployment configuration, and documentation that make up this submission.
-
-**Hackathon contribution:** The submitted work includes the integrated collateralized compute-protection workflow, evidence and challenge handling, signed-report verification, claim and dispute paths, price-protection functionality, the web interface, and the associated tests and Monad testnet deployments.
-
-**Pre-existing components:** The project relies on established open-source frameworks, libraries, and developer tools listed in the technology stack and dependency manifests. These third-party components are not claimed as original work.
-
-Any project-specific code or product functionality that existed before September 1, 2026, must be explicitly identified here before submission. For each such component, state what existed before the hackathon and what substantial functionality was added during the hackathon. Do not label earlier project-specific work as newly built.
-
-The public Git history is available at:
-
-https://github.com/Venkat5599/Mn/commits/main/
-
-The commit history should accurately reflect the work performed during the hackathon period, September 1 through November 3, 2026. The hackathon submission deadline is October 13, 2026, so the version submitted by that deadline is the version that matters for judging.
-
-## 13. AI Coding Tools Disclosure
-
-AI coding tools were used as development assistance during the project. They supported implementation work, debugging, code review, and documentation.
-
-The use of AI tools does not mean that generated code was independently validated or that the protocol is secure. Project-specific implementation, integration, testing, deployment, and submission decisions remain the responsibility of the project team.
-
-**Before submitting:** update this disclosure to name every AI coding tool actually used on HYPERHEDGE, for example Claude Code or ChatGPT, and remove any tools that were not used. Do not imply that AI-generated code was fully reviewed or tested unless that review or testing actually occurred.
-
-## 14. Security and Limitations
-
-HYPERHEDGE is an experimental testnet prototype, not a production-ready insurance product.
-
-Important limitations include:
-
-- The contracts have not undergone an independent security audit.
-- Testnet tokens have no monetary value.
-- The current host demonstration does not establish real GPU workload quality or correctness.
-- The oracle and signer infrastructure introduces trust assumptions.
-- The demonstration signers are controlled by one operator rather than independent organizations.
-- External compute-provider integration, production-grade evidence collection, and independent operational monitoring remain future work.
-- Contract bugs, signer compromise, incorrect evidence, or integration failures could cause incorrect outcomes.
-
-Do not use the prototype to secure production workloads or transfer assets of real value.
-
-## 15. Roadmap
-
-Potential next steps include:
-
-- Integrate real compute providers and validate workload-specific delivery evidence.
-- Separate oracle signers across independent operators.
-- Improve dispute review and evidence availability.
-- Add provider reputation and historical reliability information.
-- Strengthen monitoring, threat modeling, and adversarial testing.
-- Commission an independent smart contract security audit before any production deployment.
-
-These are planned improvements, not claims about existing functionality.
-
-## 16. External Dependencies and Attribution
-
-HYPERHEDGE uses open-source frameworks, libraries, and tools listed in its package manifests and build configuration. Their respective authors and maintainers retain ownership of their work under their applicable licenses.
-
-The project also uses Alchemy for Monad RPC connectivity. Monad and Alchemy are identified here as infrastructure providers; this does not imply sponsorship, endorsement, or partnership.
-
-Any additional copied, adapted, or externally sourced code and assets must be attributed in accordance with their licenses. Review the repository's actual dependencies and included assets before final submission to ensure that this section is complete.
-
-## 17. License
-
-This project is intended to be released under the **MIT License**.
-
-The repository must include a root-level `LICENSE` file containing the complete MIT License text and the correct copyright holder before the submission can claim to be MIT-licensed. Until that file is added, the license requirement is not satisfied merely by this README section.
-
-## 18. Demo
-
-**Live application:** https://hyperhedge-app.vercel.app/
-
-**Demo video:** [Add the public URL of your final demo video here]
-
-The final video should be no longer than three minutes and show the product operating, including real interactions with the deployed Monad testnet contracts. It should demonstrate the protection workflow and at least one settlement or failure scenario.
+Monad Testnet faucet: https://faucet.monad.xyz/
 
 ---
 
-**HYPERHEDGE makes delivery risk a financial commitment that can be inspected, tested, and settled onchain.**
+## Hackathon originality and build-window disclosure
+
+HYPERHEDGE is submitted to the Monad Metropolis 2026 Hackathon under **Onchain Finance & Trading**.
+
+The submission includes the integrated application, collateralized protection contracts, evidence and challenge workflow, signed-report verification, claim and dispute flows, price-protection module, SDK, tests, and Monad testnet deployments.
+
+The hackathon rules permit pre-existing components only when they are identified and substantial new functionality is added during the hackathon period.
+
+**Pre-existing project-specific work:**  
+[Before submitting, identify any project-specific code, product functionality, or other material that existed before September 1, 2026. If none existed, state that accurately. Do not describe earlier work as newly built.]
+
+**Substantial work added during the hackathon:**  
+[Confirm which of the functionality described in this README was implemented during the September 1, 2026, onward build window. Adjust this list to match the actual commit history.]
+
+Third-party frameworks, libraries, and developer tools are not claimed as original work. External code and assets must be attributed and used in accordance with their applicable licenses.
+
+**Public commit history:**  
+https://github.com/Venkat5599/Mn/commits/main/
+
+The repository history should accurately represent the work performed during the hackathon. Do not rewrite or fabricate commit dates to create the appearance of work that did not occur during the build window.
+
+## AI coding tools disclosure
+
+AI coding tools were used as development assistance for this project.
+
+**Tools used:** [List the AI coding tools actually used to build HYPERHEDGE.]
+
+**How they were used:** [Briefly describe their actual roles, such as implementation assistance, debugging, test development, code review, or documentation. Remove any activity that did not occur.]
+
+The team remains responsible for the project's design, code, integration, testing, deployment, and claims. AI assistance does not imply that the code is correct, independently verified, or secure.
+
+---
+
+## Limitations and future work
+
+HYPERHEDGE is an experimental testnet prototype. It is not audited and should not be used to protect production workloads or assets of real monetary value.
+
+Known limitations include:
+
+- The current challenge mechanism does not independently prove real GPU execution or workload correctness.
+- The demo signers are operated by a single operator.
+- Production compute-provider integrations are not yet established.
+- Oracle availability, signer integrity, evidence quality, and smart contract correctness remain important security considerations.
+- The system requires further adversarial testing and an independent security audit before production deployment.
+
+Planned development includes real provider integrations, independent signer operators, stronger workload-specific evidence, provider reliability history, improved monitoring, and an independent audit.
+
+## External services and attribution
+
+HYPERHEDGE uses open-source frameworks and libraries identified through its package manifests and relevant project files. Their authors and maintainers retain their respective rights under the applicable licenses.
+
+Alchemy is used for Monad RPC connectivity. This does not imply endorsement or sponsorship by Alchemy or Monad.
+
+Review the actual dependencies, copied code, and included assets before submission to ensure that all required third-party attribution is present.
+
+## License
+
+[Choose and confirm the project's actual open-source license.]
+
+If releasing under the MIT License, add a complete root-level `LICENSE` file containing the MIT License text and the correct copyright holder. This README statement alone does not grant an MIT license.
+
+## Demo
+
+- **Live product:** https://hyperhedge-app.vercel.app/
+- **Technical demo video:** https://youtu.be/OzmEvWe_AeY
+- **Pitch video:** https://youtu.be/8iwdtkfP4oc
+
+The videos demonstrate the project and its intended workflows. See the technical demo for the actual testnet interactions.
+
+---
+
+**HYPERHEDGE makes compute-delivery risk a financial commitment backed by collateral, evidence, and onchain settlement.**
