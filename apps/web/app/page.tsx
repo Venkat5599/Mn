@@ -201,6 +201,15 @@ export default function Landing() {
         </TiltWindow>
       </section>
 
+      {/* ── pitch video ──────────────────────────────────── */}
+      <section className={`${s.section} ${s.pitch}`} id="pitch">
+        <h2>
+          The pitch in 95 seconds.
+          <span> One contract, from locked collateral to a settled claim, on Monad testnet.</span>
+        </h2>
+        <video className={s.pitchVideo} src="/pitch.mp4" poster="/pitch-poster.jpg" controls playsInline preload="metadata" />
+      </section>
+
       {/* ── built with ───────────────────────────────────── */}
       <section className={s.built}>
         <p>Built with open tools, settled on Monad testnet</p>
